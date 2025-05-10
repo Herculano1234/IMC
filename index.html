@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Saúde</title>
+    
+    <!-- Font Awesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* Reset CSS */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Estilos Gerais */
+        body {
+            background-color: #004d4d;
+            color: #ffffff;
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background-color: #003333;
+            padding: 20px;
+            position: fixed;
+            height: 100vh;
+            width: 240px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .menu-item:hover {
+            background-color: #005a5a;
+        }
+
+        .menu-item i {
+            margin-right: 12px;
+            width: 24px;
+        }
+
+        /* Header */
+        .header {
+            grid-column: 2;
+            background-color: #003333;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-bar {
+            background-color: #004d4d;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            color: white;
+            width: 300px;
+        }
+
+        .header-icons i {
+            margin-left: 20px;
+            cursor: pointer;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 30px;
+            grid-column: 2;
+            margin-top: 60px;
+        }
+
+        /* Filtros */
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .filter-btn {
+            background: none;
+            border: 1px solid #00cccc;
+            color: #00cccc;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        /* Gráfico */
+        .chart-container {
+            background-color: #003333;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 30px 0;
+            height: 400px;
+        }
+
+        /* Cards */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background-color: #003333;
+            padding: 20px;
+            border-radius: 15px;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .card-header i {
+            font-size: 24px;
+            margin-right: 15px;
+        }
+
+        .metric {
+            font-size: 32px;
+            font-weight: bold;
+            color: #00cccc;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="menu-item">
+            <i class="fas fa-home"></i> Dashboard
+        </div>
+        <div class="menu-item">
+            <i class="fas fa-chart-bar"></i> Reports
+        </div>
+        <div class="menu-item">
+            <i class="fas fa-project-diagram"></i> Projects
+        </div>
+        <div class="menu-item">
+            <i class="fas fa-lightbulb"></i> Insights
+        </div>
+        <div class="menu-item">
+            <i class="fas fa-tasks"></i> Tasks
+        </div>
+        <div class="menu-item">
+            <i class="fas fa-user"></i> Profile
+        </div>
+        <div class="menu-item">
+            <i class="fas fa-question-circle"></i> Help
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="header">
+        <input type="text" class="search-bar" placeholder="Pesquisar...">
+        <div class="header-icons">
+            <i class="fas fa-bell"></i>
+            <i class="fas fa-cog"></i>
+            <i class="fas fa-user-circle"></i>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <h1>Dashboard</h1>
+        <p>Bem-vindo ao seu painel de saúde. Aqui estão suas métricas atualizadas:</p>
+        
+        <div class="filters">
+            <button class="filter-btn">Semana</button>
+            <button class="filter-btn">Mês</button>
+            <button class="filter-btn">Ano</button>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="myChart"></canvas>
+        </div>
+
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-weight"></i>
+                    <h3>Weights</h3>
+                </div>
+                <div class="metric">75kg</div>
+                <p>Última medição: 15/05</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-utensils"></i>
+                    <h3>Crafts</h3>
+                </div>
+                <div class="metric">429</div>
+                <p>Refeições registradas</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-carrot"></i>
+                    <h3>Fridge</h3>
+                </div>
+                <div class="metric">4</div>
+                <p>Itens próximos do vencimento</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Configuração do gráfico
+        const ctx = document.getElementById('myChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+                datasets: [{
+                    label: 'IMC',
+                    data: [22, 23, 22.5, 23.2, 22.8, 23.5],
+                    backgroundColor: [
+                        '#9c27b0',
+                        '#ff9800',
+                        '#4caf50',
+                        '#ffeb3b',
+                        '#2196f3',
+                        '#e91e63'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: '#fff'
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            color: '#fff'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#fff'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Interatividade do menu
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.menu-item').forEach(i => i.style.background = '');
+                this.style.backgroundColor = '#005a5a';
+            });
+        });
+    </script>
+</body>
+</html>
