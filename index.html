@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Saúde Moderno</title>
-    
-    <!-- Font Awesome -->
+    <title>Health Dashboard Completo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     
     <style>
         * {
@@ -22,6 +21,7 @@
             --branco: #ffffff;
             --cinza: #f5f5f5;
             --texto: #2c3e50;
+            --sombra: rgba(0,0,0,0.1);
         }
 
         body {
@@ -39,7 +39,7 @@
             position: fixed;
             height: 100vh;
             width: 240px;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            box-shadow: 2px 0 10px var(--sombra);
         }
 
         .menu-item {
@@ -72,7 +72,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px var(--sombra);
         }
 
         .search-bar {
@@ -98,7 +98,7 @@
             margin-top: 80px;
         }
 
-        /* Filtros */
+        /* Estilos do Dashboard */
         .filters {
             display: flex;
             gap: 15px;
@@ -121,17 +121,15 @@
             color: var(--branco);
         }
 
-        /* Gráfico */
         .chart-container {
             background: var(--branco);
             padding: 25px;
             border-radius: 15px;
             margin: 30px 0;
             height: 500px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 10px var(--sombra);
         }
 
-        /* Cards */
         .cards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -143,52 +141,118 @@
             background: var(--branco);
             padding: 25px;
             border-radius: 15px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 10px var(--sombra);
         }
 
-        .card-header {
-            display: flex;
-            align-items: center;
+        /* Páginas */
+        .content-page {
+            display: none;
+        }
+
+        .active-page {
+            display: block;
+        }
+
+        /* Calculadora IMC */
+        .imc-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+            background: var(--branco);
+            border-radius: 15px;
+            box-shadow: 0 2px 10px var(--sombra);
+        }
+
+        .imc-input-group {
             margin-bottom: 20px;
         }
 
-        .card-header i {
-            font-size: 28px;
-            margin-right: 15px;
+        .imc-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--azul-claro);
+            border-radius: 8px;
+            margin-top: 5px;
+            font-size: 16px;
+        }
+
+        .imc-button {
+            background: var(--azul);
+            color: var(--branco);
+            border: none;
+            padding: 15px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        /* Relatórios */
+        .relatorio-container {
+            background: var(--branco);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px var(--sombra);
+        }
+
+        .filtros-relatorio {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .filtro-select {
+            padding: 10px 15px;
+            border: 2px solid var(--azul);
+            border-radius: 8px;
+            background: var(--branco);
+        }
+
+        .tabela-relatorio {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .tabela-relatorio th,
+        .tabela-relatorio td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--azul-claro);
+        }
+
+        .tabela-relatorio th {
+            background: var(--azul-claro);
             color: var(--azul);
         }
 
-        .metric {
-            font-size: 36px;
-            font-weight: 700;
-            color: var(--azul);
-            margin-bottom: 10px;
+        .pdf-button {
+            background: var(--azul);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            float: right;
         }
     </style>
 </head>
 <body>
     <!-- Sidebar -->
     <nav class="sidebar">
-        <div class="menu-item">
+        <div class="menu-item" data-page="dashboard">
             <i class="fas fa-home"></i> Dashboard
         </div>
-        <div class="menu-item">
-            <i class="fas fa-chart-bar"></i> Reports
+        <div class="menu-item" data-page="imc">
+            <i class="fas fa-calculator"></i> Teste IMC
+        </div>
+        <div class="menu-item" data-page="relatorio">
+            <i class="fas fa-chart-bar"></i> Relatórios
         </div>
         <div class="menu-item">
-            <i class="fas fa-project-diagram"></i> Projects
-        </div>
-        <div class="menu-item">
-            <i class="fas fa-lightbulb"></i> Insights
-        </div>
-        <div class="menu-item">
-            <i class="fas fa-tasks"></i> Tasks
-        </div>
-        <div class="menu-item">
-            <i class="fas fa-user"></i> Profile
-        </div>
-        <div class="menu-item">
-            <i class="fas fa-question-circle"></i> Help
+            <i class="fas fa-question-circle"></i> Ajuda
         </div>
     </nav>
 
@@ -202,56 +266,91 @@
         </div>
     </header>
 
-    <!-- Main Content -->
+    <!-- Conteúdo Principal -->
     <main class="main-content">
-        <h1 style="font-size: 32px; margin-bottom: 15px;">Dashboard</h1>
-        <p style="color: #666; margin-bottom: 30px;">Análise completa de saúde e desempenho - Dados atualizados em tempo real</p>
-        
-        <div class="filters">
-            <button class="filter-btn">Hoje</button>
-            <button class="filter-btn">Semana</button>
-            <button class="filter-btn active">Mês</button>
-            <button class="filter-btn">Ano</button>
+        <!-- Dashboard -->
+        <div id="dashboard-content" class="content-page active-page">
+            <h1>Dashboard de Saúde</h1>
+            <div class="filters">
+                <button class="filter-btn active">Hoje</button>
+                <button class="filter-btn">Semana</button>
+                <button class="filter-btn">Mês</button>
+            </div>
+            <div class="chart-container">
+                <canvas id="healthChart"></canvas>
+            </div>
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-weight"></i>
+                        <h3>Peso Corporal</h3>
+                    </div>
+                    <div class="metric">75.4 kg</div>
+                    <p>Variação mensal: -0.8 kg</p>
+                </div>
+                <!-- Outros cards... -->
+            </div>
         </div>
 
-        <div class="chart-container">
-            <canvas id="healthChart"></canvas>
+        <!-- Teste IMC -->
+        <div id="imc-content" class="content-page">
+            <div class="imc-container">
+                <h2><i class="fas fa-calculator"></i> Calculadora de IMC</h2>
+                <div class="imc-input-group">
+                    <label>Peso (kg):</label>
+                    <input type="number" id="weight" class="imc-input" placeholder="Ex: 70.5" step="0.1">
+                </div>
+                <div class="imc-input-group">
+                    <label>Altura (m):</label>
+                    <input type="number" id="height" class="imc-input" placeholder="Ex: 1.75" step="0.01">
+                </div>
+                <button class="imc-button" onclick="calculateIMC()">Calcular IMC</button>
+                <div id="imc-result" class="imc-result"></div>
+            </div>
         </div>
 
-        <div class="cards-grid">
-            <div class="card">
-                <div class="card-header">
-                    <i class="fas fa-weight"></i>
-                    <h3>Peso Corporal</h3>
+        <!-- Relatórios -->
+        <div id="relatorio-content" class="content-page">
+            <div class="relatorio-container">
+                <h2><i class="fas fa-file-pdf"></i> Relatório de IMC</h2>
+                <div class="filtros-relatorio">
+                    <select class="filtro-select" id="periodo">
+                        <option value="dia">Hoje</option>
+                        <option value="mes">Este Mês</option>
+                        <option value="ano">Este Ano</option>
+                    </select>
+                    <select class="filtro-select" id="tipo-relatorio">
+                        <option value="todos">Todos</option>
+                        <option value="abaixo">Abaixo do Peso</option>
+                        <option value="normal">Normal</option>
+                        <option value="sobrepeso">Sobrepeso</option>
+                        <option value="obesidade">Obesidade</option>
+                    </select>
                 </div>
-                <div class="metric">75.4 kg</div>
-                <p>Variação mensal: -0.8 kg</p>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <i class="fas fa-heartbeat"></i>
-                    <h3>Batimentos</h3>
-                </div>
-                <div class="metric">72 bpm</div>
-                <p>Média diária</p>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <i class="fas fa-walking"></i>
-                    <h3>Passos</h3>
-                </div>
-                <div class="metric">8.432</div>
-                <p>Meta diária: 10.000</p>
+                <table class="tabela-relatorio">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Peso</th>
+                            <th>Altura</th>
+                            <th>IMC</th>
+                            <th>Classificação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dados-relatorio">
+                        <!-- Dados serão preenchidos via JS -->
+                    </tbody>
+                </table>
+                <button class="pdf-button" onclick="gerarPDF()">
+                    <i class="fas fa-download"></i> Baixar Relatório
+                </button>
             </div>
         </div>
     </main>
 
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Configuração do Gráfico de Saúde
+        // Configuração do Gráfico (Original)
         const ctx = document.getElementById('healthChart').getContext('2d');
         new Chart(ctx, {
             type: 'bar',
@@ -279,29 +378,167 @@
                         grid: { display: false },
                         ticks: { color: '#666', font: { weight: '600' } }
                     }
-                },
-                plugins: {
-                    legend: {
-                        labels: { color: '#333', font: { size: 14, weight: '600' } }
-                    }
                 }
             }
         });
 
-        // Interatividade
+        // Sistema de Navegação
         document.querySelectorAll('.menu-item').forEach(item => {
             item.addEventListener('click', function() {
-                document.querySelectorAll('.menu-item').forEach(i => i.style.background = '');
-                this.style.background = '#e3f2fd';
+                const pageId = this.dataset.page;
+                if(pageId) {
+                    document.querySelectorAll('.menu-item').forEach(i => {
+                        i.style.background = '';
+                        i.style.color = '';
+                    });
+                    this.style.background = '#e3f2fd';
+                    this.style.color = '#2196F3';
+                    
+                    document.querySelectorAll('.content-page').forEach(page => {
+                        page.classList.remove('active-page');
+                    });
+                    document.getElementById(`${pageId}-content`).classList.add('active-page');
+                }
             });
         });
 
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
+        // Sistema de IMC
+        let historicoIMC = JSON.parse(localStorage.getItem('historicoIMC')) || [];
+
+        function calculateIMC() {
+            const weight = parseFloat(document.getElementById('weight').value);
+            const height = parseFloat(document.getElementById('height').value);
+            const resultDiv = document.getElementById('imc-result');
+
+            if (weight && height && height > 0) {
+                const imc = weight / (height * height);
+                let classification = '';
+                
+                if (imc < 18.5) classification = 'Abaixo do peso';
+                else if (imc < 25) classification = 'Peso normal';
+                else if (imc < 30) classification = 'Sobrepeso';
+                else if (imc < 35) classification = 'Obesidade Grau I';
+                else if (imc < 40) classification = 'Obesidade Grau II';
+                else classification = 'Obesidade Grau III';
+
+                // Salvar no histórico
+                const registro = {
+                    data: new Date().toISOString(),
+                    peso: weight,
+                    altura: height,
+                    imc: imc.toFixed(1),
+                    classificacao: classification
+                };
+                historicoIMC.push(registro);
+                localStorage.setItem('historicoIMC', JSON.stringify(historicoIMC));
+                
+                // Atualizar relatório
+                atualizarRelatorio();
+                
+                // Mostrar resultado
+                resultDiv.innerHTML = `IMC: ${imc.toFixed(1)} (${classification})`;
+                resultDiv.style.backgroundColor = '#e3f2fd';
+                resultDiv.style.padding = '10px';
+                resultDiv.style.borderRadius = '5px';
+            } else {
+                resultDiv.innerHTML = 'Por favor, insira valores válidos!';
+                resultDiv.style.backgroundColor = '#ffe0e0';
+            }
+        }
+
+        // Sistema de Relatórios
+        function atualizarRelatorio() {
+            const periodo = document.getElementById('periodo').value;
+            const tipo = document.getElementById('tipo-relatorio').value;
+            const dadosFiltrados = filtrarDados(periodo, tipo);
+            
+            const tbody = document.getElementById('dados-relatorio');
+            tbody.innerHTML = dadosFiltrados.map(registro => `
+                <tr>
+                    <td>${formatarData(registro.data)}</td>
+                    <td>${registro.peso} kg</td>
+                    <td>${registro.altura} m</td>
+                    <td>${registro.imc}</td>
+                    <td>${registro.classificacao}</td>
+                </tr>
+            `).join('');
+        }
+
+        function filtrarDados(periodo, tipo) {
+            const agora = new Date();
+            return historicoIMC.filter(registro => {
+                const dataRegistro = new Date(registro.data);
+                
+                // Filtro temporal
+                if(periodo === 'dia' && !ehMesmoDia(dataRegistro, agora)) return false;
+                if(periodo === 'mes' && dataRegistro.getMonth() !== agora.getMonth()) return false;
+                if(periodo === 'ano' && dataRegistro.getFullYear() !== agora.getFullYear()) return false;
+                
+                // Filtro de classificação
+                switch(tipo) {
+                    case 'abaixo': return registro.classificacao === 'Abaixo do peso';
+                    case 'normal': return registro.classificacao === 'Peso normal';
+                    case 'sobrepeso': return registro.classificacao === 'Sobrepeso';
+                    case 'obesidade': return registro.classificacao.includes('Obesidade');
+                    default: return true;
+                }
             });
-        });
+        }
+
+        function ehMesmoDia(d1, d2) {
+            return d1.getDate() === d2.getDate() &&
+                   d1.getMonth() === d2.getMonth() &&
+                   d1.getFullYear() === d2.getFullYear();
+        }
+
+        function formatarData(isoString) {
+            const data = new Date(isoString);
+            return data.toLocaleDateString('pt-BR') + ' ' + data.toLocaleTimeString('pt-BR').substring(0,5);
+        }
+
+        // Gerar PDF
+        function gerarPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            doc.setFontSize(18);
+            doc.text("Relatório de IMC - Saúde Digital", 14, 20);
+            doc.setFontSize(12);
+            doc.text(`Período: ${document.getElementById('periodo').value} | Filtro: ${document.getElementById('tipo-relatorio').value}`, 14, 30);
+            
+            const headers = [["Data", "Peso (kg)", "Altura (m)", "IMC", "Classificação"]];
+            const dados = filtrarDados(
+                document.getElementById('periodo').value,
+                document.getElementById('tipo-relatorio').value
+            ).map(registro => [
+                formatarData(registro.data),
+                registro.peso,
+                registro.altura,
+                registro.imc,
+                registro.classificacao
+            ]);
+
+            doc.autoTable({
+                head: headers,
+                body: dados,
+                startY: 40,
+                theme: 'grid',
+                styles: { fontSize: 10 },
+                headStyles: { fillColor: [33, 150, 243] }
+            });
+
+            doc.save('relatorio_imc.pdf');
+        }
+
+        // Event Listeners
+        document.getElementById('periodo').addEventListener('change', atualizarRelatorio);
+        document.getElementById('tipo-relatorio').addEventListener('change', atualizarRelatorio);
+        
+        // Inicialização
+        window.onload = () => {
+            historicoIMC = JSON.parse(localStorage.getItem('historicoIMC')) || [];
+            atualizarRelatorio();
+        };
     </script>
 </body>
 </html>
