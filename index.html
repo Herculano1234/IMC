@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Saúde Moderno</title>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        :root {
+            --azul: #2196F3;
+            --azul-claro: #e3f2fd;
+            --branco: #ffffff;
+            --cinza: #f5f5f5;
+            --texto: #2c3e50;
+        }
+
+        body {
+            background: var(--cinza);
+            color: var(--texto);
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--branco);
+            padding: 20px;
+            position: fixed;
+            height: 100vh;
+            width: 240px;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin: 8px 0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            color: var(--texto);
+        }
+
+        .menu-item:hover {
+            background: var(--azul-claro);
+            color: var(--azul);
+        }
+
+        .menu-item i {
+            margin-right: 15px;
+            width: 25px;
+            color: var(--azul);
+        }
+
+        /* Header */
+        .header {
+            grid-column: 2;
+            background: var(--branco);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .search-bar {
+            background: var(--azul-claro);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            width: 400px;
+            font-size: 14px;
+        }
+
+        .header-icons i {
+            margin-left: 25px;
+            cursor: pointer;
+            color: var(--azul);
+            font-size: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 40px;
+            grid-column: 2;
+            margin-top: 80px;
+        }
+
+        /* Filtros */
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .filter-btn {
+            background: none;
+            border: 2px solid var(--azul);
+            color: var(--azul);
+            padding: 10px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 600;
+        }
+
+        .filter-btn:hover {
+            background: var(--azul);
+            color: var(--branco);
+        }
+
+        /* Gráfico */
+        .chart-container {
+            background: var(--branco);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            height: 500px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        /* Cards */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .card {
+            background: var(--branco);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-header i {
+            font-size: 28px;
+            margin-right: 15px;
+            color: var(--azul);
+        }
+
+        .metric {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--azul);
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="menu-item">
+            <i class="fas fa-home"></i> Dashboard
+        </div>
+        <div class="menu-item">
+            <i class="fas fa-chart-bar"></i> Reports
+        </div>
+        <div class="menu-item">
+            <i class="fas fa-project-diagram"></i> Projects
+        </div>
+        <div class="menu-item">
+            <i class="fas fa-lightbulb"></i> Insights
+        </div>
+        <div class="menu-item">
+            <i class="fas fa-tasks"></i> Tasks
+        </div>
+        <div class="menu-item">
+            <i class="fas fa-user"></i> Profile
+        </div>
+        <div class="menu-item">
+            <i class="fas fa-question-circle"></i> Help
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="header">
+        <input type="text" class="search-bar" placeholder="Pesquisar...">
+        <div class="header-icons">
+            <i class="fas fa-bell"></i>
+            <i class="fas fa-cog"></i>
+            <i class="fas fa-user-circle"></i>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <h1 style="font-size: 32px; margin-bottom: 15px;">Dashboard</h1>
+        <p style="color: #666; margin-bottom: 30px;">Análise completa de saúde e desempenho - Dados atualizados em tempo real</p>
+        
+        <div class="filters">
+            <button class="filter-btn">Hoje</button>
+            <button class="filter-btn">Semana</button>
+            <button class="filter-btn active">Mês</button>
+            <button class="filter-btn">Ano</button>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="healthChart"></canvas>
+        </div>
+
+        <div class="cards-grid">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-weight"></i>
+                    <h3>Peso Corporal</h3>
+                </div>
+                <div class="metric">75.4 kg</div>
+                <p>Variação mensal: -0.8 kg</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-heartbeat"></i>
+                    <h3>Batimentos</h3>
+                </div>
+                <div class="metric">72 bpm</div>
+                <p>Média diária</p>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-walking"></i>
+                    <h3>Passos</h3>
+                </div>
+                <div class="metric">8.432</div>
+                <p>Meta diária: 10.000</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Configuração do Gráfico de Saúde
+        const ctx = document.getElementById('healthChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+                datasets: [{
+                    label: 'IMC Médio',
+                    data: [22.1, 22.8, 23.2, 22.9, 23.5, 23.1],
+                    backgroundColor: '#2196F3',
+                    borderWidth: 0,
+                    borderRadius: 10,
+                    barThickness: 40
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#eee' },
+                        ticks: { color: '#666', font: { weight: '600' } }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#666', font: { weight: '600' } }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        labels: { color: '#333', font: { size: 14, weight: '600' } }
+                    }
+                }
+            }
+        });
+
+        // Interatividade
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.menu-item').forEach(i => i.style.background = '');
+                this.style.background = '#e3f2fd';
+            });
+        });
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
