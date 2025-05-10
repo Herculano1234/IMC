@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Health Dashboard Completo</title>
+    <title>Sistema Completo de Saúde</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
     <style>
         * {
             margin: 0;
@@ -32,7 +33,6 @@
             min-height: 100vh;
         }
 
-        /* Sidebar */
         .sidebar {
             background: var(--branco);
             padding: 20px;
@@ -64,7 +64,6 @@
             color: var(--azul);
         }
 
-        /* Header */
         .header {
             grid-column: 2;
             background: var(--branco);
@@ -84,67 +83,12 @@
             font-size: 14px;
         }
 
-        .header-icons i {
-            margin-left: 25px;
-            cursor: pointer;
-            color: var(--azul);
-            font-size: 20px;
-        }
-
-        /* Main Content */
         .main-content {
             padding: 40px;
             grid-column: 2;
             margin-top: 80px;
         }
 
-        /* Estilos do Dashboard */
-        .filters {
-            display: flex;
-            gap: 15px;
-            margin: 25px 0;
-        }
-
-        .filter-btn {
-            background: none;
-            border: 2px solid var(--azul);
-            color: var(--azul);
-            padding: 10px 25px;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: 0.3s;
-            font-weight: 600;
-        }
-
-        .filter-btn:hover {
-            background: var(--azul);
-            color: var(--branco);
-        }
-
-        .chart-container {
-            background: var(--branco);
-            padding: 25px;
-            border-radius: 15px;
-            margin: 30px 0;
-            height: 500px;
-            box-shadow: 0 2px 10px var(--sombra);
-        }
-
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            margin-top: 40px;
-        }
-
-        .card {
-            background: var(--branco);
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 2px 10px var(--sombra);
-        }
-
-        /* Páginas */
         .content-page {
             display: none;
         }
@@ -153,7 +97,6 @@
             display: block;
         }
 
-        /* Calculadora IMC */
         .imc-container {
             max-width: 600px;
             margin: 0 auto;
@@ -161,6 +104,14 @@
             background: var(--branco);
             border-radius: 15px;
             box-shadow: 0 2px 10px var(--sombra);
+        }
+
+        .name-input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 2px solid var(--azul-claro);
+            border-radius: 8px;
         }
 
         .imc-input-group {
@@ -172,13 +123,12 @@
             padding: 12px;
             border: 2px solid var(--azul-claro);
             border-radius: 8px;
-            margin-top: 5px;
             font-size: 16px;
         }
 
         .imc-button {
             background: var(--azul);
-            color: var(--branco);
+            color: white;
             border: none;
             padding: 15px 25px;
             border-radius: 8px;
@@ -188,25 +138,46 @@
             transition: 0.3s;
         }
 
-        /* Relatórios */
+        .imc-result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .recommendations {
+            margin-top: 30px;
+            padding: 20px;
+            background: var(--azul-claro);
+            border-radius: 10px;
+        }
+
+        .recommendation-category {
+            margin-bottom: 20px;
+        }
+
+        .recommendation-category h4 {
+            color: var(--azul);
+            margin-bottom: 10px;
+        }
+
+        .pdf-button {
+            background: var(--azul);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            float: right;
+        }
+
         .relatorio-container {
             background: var(--branco);
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 2px 10px var(--sombra);
-        }
-
-        .filtros-relatorio {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .filtro-select {
-            padding: 10px 15px;
-            border: 2px solid var(--azul);
-            border-radius: 8px;
-            background: var(--branco);
         }
 
         .tabela-relatorio {
@@ -226,21 +197,9 @@
             background: var(--azul-claro);
             color: var(--azul);
         }
-
-        .pdf-button {
-            background: var(--azul);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 20px;
-            float: right;
-        }
     </style>
 </head>
 <body>
-    <!-- Sidebar -->
     <nav class="sidebar">
         <div class="menu-item" data-page="dashboard">
             <i class="fas fa-home"></i> Dashboard
@@ -256,7 +215,6 @@
         </div>
     </nav>
 
-    <!-- Header -->
     <header class="header">
         <input type="text" class="search-bar" placeholder="Pesquisar...">
         <div class="header-icons">
@@ -266,123 +224,191 @@
         </div>
     </header>
 
-    <!-- Conteúdo Principal -->
     <main class="main-content">
-        <!-- Dashboard -->
-        <div id="dashboard-content" class="content-page active-page">
-            <h1>Dashboard de Saúde</h1>
-            <div class="filters">
-                <button class="filter-btn active">Hoje</button>
-                <button class="filter-btn">Semana</button>
-                <button class="filter-btn">Mês</button>
-            </div>
-            <div class="chart-container">
-                <canvas id="healthChart"></canvas>
-            </div>
-            <div class="cards-grid">
-                <div class="card">
-                    <div class="card-header">
-                        <i class="fas fa-weight"></i>
-                        <h3>Peso Corporal</h3>
-                    </div>
-                    <div class="metric">75.4 kg</div>
-                    <p>Variação mensal: -0.8 kg</p>
-                </div>
-                <!-- Outros cards... -->
-            </div>
-        </div>
-
-        <!-- Teste IMC -->
+        
+        <!-- Página IMC -->
         <div id="imc-content" class="content-page">
             <div class="imc-container">
-                <h2><i class="fas fa-calculator"></i> Calculadora de IMC</h2>
+                <h2><i class="fas fa-user"></i> Avaliação de Saúde Individual</h2>
+                <input type="text" id="user-name" class="name-input" placeholder="Nome completo do paciente">
+                
                 <div class="imc-input-group">
                     <label>Peso (kg):</label>
-                    <input type="number" id="weight" class="imc-input" placeholder="Ex: 70.5" step="0.1">
+                    <input type="number" id="weight" class="imc-input" step="0.1">
                 </div>
+                
                 <div class="imc-input-group">
                     <label>Altura (m):</label>
-                    <input type="number" id="height" class="imc-input" placeholder="Ex: 1.75" step="0.01">
+                    <input type="number" id="height" class="imc-input" step="0.01">
                 </div>
+                
                 <button class="imc-button" onclick="calculateIMC()">Calcular IMC</button>
+                
                 <div id="imc-result" class="imc-result"></div>
+                <div id="recommendations" class="recommendations"></div>
+                <button class="pdf-button" onclick="gerarRelatorioIndividual()" style="display: none;">
+                    <i class="fas fa-file-pdf"></i> Gerar Relatório Individual
+                </button>
             </div>
         </div>
 
-        <!-- Relatórios -->
+        <!-- Página Relatórios -->
         <div id="relatorio-content" class="content-page">
             <div class="relatorio-container">
-                <h2><i class="fas fa-file-pdf"></i> Relatório de IMC</h2>
-                <div class="filtros-relatorio">
-                    <select class="filtro-select" id="periodo">
-                        <option value="dia">Hoje</option>
-                        <option value="mes">Este Mês</option>
-                        <option value="ano">Este Ano</option>
-                    </select>
-                    <select class="filtro-select" id="tipo-relatorio">
-                        <option value="todos">Todos</option>
-                        <option value="abaixo">Abaixo do Peso</option>
-                        <option value="normal">Normal</option>
-                        <option value="sobrepeso">Sobrepeso</option>
-                        <option value="obesidade">Obesidade</option>
-                    </select>
-                </div>
+                <h2><i class="fas fa-file-medical"></i> Histórico de Avaliações</h2>
                 <table class="tabela-relatorio">
                     <thead>
                         <tr>
+                            <th>Nome</th>
                             <th>Data</th>
-                            <th>Peso</th>
-                            <th>Altura</th>
                             <th>IMC</th>
                             <th>Classificação</th>
                         </tr>
                     </thead>
                     <tbody id="dados-relatorio">
-                        <!-- Dados serão preenchidos via JS -->
                     </tbody>
                 </table>
-                <button class="pdf-button" onclick="gerarPDF()">
-                    <i class="fas fa-download"></i> Baixar Relatório
-                </button>
             </div>
         </div>
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Configuração do Gráfico (Original)
-        const ctx = document.getElementById('healthChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
-                datasets: [{
-                    label: 'IMC Médio',
-                    data: [22.1, 22.8, 23.2, 22.9, 23.5, 23.1],
-                    backgroundColor: '#2196F3',
-                    borderWidth: 0,
-                    borderRadius: 10,
-                    barThickness: 40
-                }]
+        const recomendacoes = {
+            'Abaixo do peso': {
+                medico: 'Consulta com nutricionista e endocrinologista. Realizar exames de sangue completos.',
+                nutricao: 'Dieta hipercalórica com aumento progressivo de nutrientes. Suplementação vitamínica.',
+                exercicio: 'Treino de força 3x/semana. Atividades aeróbicas leves 30min/dia.'
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: { color: '#eee' },
-                        ticks: { color: '#666', font: { weight: '600' } }
-                    },
-                    x: {
-                        grid: { display: false },
-                        ticks: { color: '#666', font: { weight: '600' } }
-                    }
-                }
+            'Peso normal': {
+                medico: 'Check-up anual. Monitorar pressão arterial regularmente.',
+                nutricao: 'Manter dieta balanceada com ênfase em alimentos integrais. Hidratação adequada.',
+                exercicio: '150 minutos de atividade moderada por semana. Treino funcional 2x/semana.'
+            },
+            'Sobrepeso': {
+                medico: 'Avaliação de risco cardiovascular. Monitorar glicemia.',
+                nutricao: 'Redução de 300-500kcal/dia. Priorizar proteínas magras e fibras.',
+                exercicio: '300 minutos de atividade moderada/semana. Treino HIIT 3x/semana.'
+            },
+            'Obesidade Grau I': {
+                medico: 'Acompanhamento multidisciplinar. Avaliação metabólica completa.',
+                nutricao: 'Plano alimentar individualizado. Controle rigoroso de carboidratos.',
+                exercicio: 'Atividades aquáticas diárias. Caminhadas progressivas.'
+            },
+            'Obesidade Grau II': {
+                medico: 'Avaliação para intervenções cirúrgicas. Monitoramento cardiológico.',
+                nutricao: 'Dieta hipocalórica supervisionada. Reeducação alimentar intensiva.',
+                exercicio: 'Fisioterapia 3x/semana. Exercícios de mobilidade articular.'
+            },
+            'Obesidade Grau III': {
+                medico: 'Internação para avaliação emergencial. Controle de comorbidades.',
+                nutricao: 'Dieta hospitalar. Suporte nutricional parenteral se necessário.',
+                exercicio: 'Fisioterapia intensiva. Exercícios passivos assistidos.'
             }
-        });
+        };
 
-        // Sistema de Navegação
+        let historicoIMC = JSON.parse(localStorage.getItem('historicoIMC')) || [];
+
+        function calculateIMC() {
+            const userName = document.getElementById('user-name').value;
+            const weight = parseFloat(document.getElementById('weight').value);
+            const height = parseFloat(document.getElementById('height').value);
+            const resultDiv = document.getElementById('imc-result');
+            const recDiv = document.getElementById('recommendations');
+            const pdfButton = document.querySelector('.pdf-button');
+
+            if (userName && weight && height > 0) {
+                const imc = weight / (height * height);
+                let classification = '';
+
+                if (imc < 18.5) classification = 'Abaixo do peso';
+                else if (imc < 25) classification = 'Peso normal';
+                else if (imc < 30) classification = 'Sobrepeso';
+                else if (imc < 35) classification = 'Obesidade Grau I';
+                else if (imc < 40) classification = 'Obesidade Grau II';
+                else classification = 'Obesidade Grau III';
+
+                const registro = {
+                    nome: userName,
+                    data: new Date().toISOString(),
+                    peso: weight,
+                    altura: height,
+                    imc: imc.toFixed(1),
+                    classificacao: classification
+                };
+
+                historicoIMC.push(registro);
+                localStorage.setItem('historicoIMC', JSON.stringify(historicoIMC));
+
+                resultDiv.innerHTML = `Resultado para ${userName}: IMC ${imc.toFixed(1)} (${classification})`;
+                resultDiv.style.backgroundColor = '#e3f2fd';
+                
+                recDiv.innerHTML = `
+                    <h3>Plano de Ação Personalizado:</h3>
+                    <div class="recommendation-category">
+                        <h4><i class="fas fa-stethoscope"></i> Recomendações Médicas</h4>
+                        <p>${recomendacoes[classification].medico}</p>
+                    </div>
+                    <div class="recommendation-category">
+                        <h4><i class="fas fa-utensils"></i> Orientações Nutricionais</h4>
+                        <p>${recomendacoes[classification].nutricao}</p>
+                    </div>
+                    <div class="recommendation-category">
+                        <h4><i class="fas fa-dumbbell"></i> Programa de Exercícios</h4>
+                        <p>${recomendacoes[classification].exercicio}</p>
+                    </div>
+                `;
+
+                pdfButton.style.display = 'block';
+                atualizarRelatorio();
+            }
+        }
+
+        function gerarRelatorioIndividual() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const userName = document.getElementById('user-name').value;
+            const registro = historicoIMC[historicoIMC.length - 1];
+
+            doc.setFontSize(18);
+            doc.text(`Relatório de Saúde - ${userName}`, 14, 20);
+            
+            // Dados básicos
+            doc.setFontSize(12);
+            doc.text(`Data: ${new Date(registro.data).toLocaleDateString()}`, 14, 30);
+            doc.text(`IMC: ${registro.imc} (${registro.classificacao})`, 14, 40);
+
+            // Tabela de recomendações
+            const data = [
+                ['Área', 'Recomendação'],
+                ['Médica', recomendacoes[registro.classificacao].medico],
+                ['Nutrição', recomendacoes[registro.classificacao].nutricao],
+                ['Exercícios', recomendacoes[registro.classificacao].exercicio]
+            ];
+
+            doc.autoTable({
+                startY: 50,
+                head: [data[0]],
+                body: data.slice(1),
+                theme: 'grid',
+                styles: { fontSize: 10 },
+                headStyles: { fillColor: [33, 150, 243] }
+            });
+
+            doc.save(`Relatorio_${userName.replace(/ /g, '_')}.pdf`);
+        }
+
+        function atualizarRelatorio() {
+            const tbody = document.getElementById('dados-relatorio');
+            tbody.innerHTML = historicoIMC.map(registro => `
+                <tr>
+                    <td>${registro.nome}</td>
+                    <td>${new Date(registro.data).toLocaleDateString()}</td>
+                    <td>${registro.imc}</td>
+                    <td>${registro.classificacao}</td>
+                </tr>
+            `).join('');
+        }
+
         document.querySelectorAll('.menu-item').forEach(item => {
             item.addEventListener('click', function() {
                 const pageId = this.dataset.page;
@@ -402,139 +428,6 @@
             });
         });
 
-        // Sistema de IMC
-        let historicoIMC = JSON.parse(localStorage.getItem('historicoIMC')) || [];
-
-        function calculateIMC() {
-            const weight = parseFloat(document.getElementById('weight').value);
-            const height = parseFloat(document.getElementById('height').value);
-            const resultDiv = document.getElementById('imc-result');
-
-            if (weight && height && height > 0) {
-                const imc = weight / (height * height);
-                let classification = '';
-                
-                if (imc < 18.5) classification = 'Abaixo do peso';
-                else if (imc < 25) classification = 'Peso normal';
-                else if (imc < 30) classification = 'Sobrepeso';
-                else if (imc < 35) classification = 'Obesidade Grau I';
-                else if (imc < 40) classification = 'Obesidade Grau II';
-                else classification = 'Obesidade Grau III';
-
-                // Salvar no histórico
-                const registro = {
-                    data: new Date().toISOString(),
-                    peso: weight,
-                    altura: height,
-                    imc: imc.toFixed(1),
-                    classificacao: classification
-                };
-                historicoIMC.push(registro);
-                localStorage.setItem('historicoIMC', JSON.stringify(historicoIMC));
-                
-                // Atualizar relatório
-                atualizarRelatorio();
-                
-                // Mostrar resultado
-                resultDiv.innerHTML = `IMC: ${imc.toFixed(1)} (${classification})`;
-                resultDiv.style.backgroundColor = '#e3f2fd';
-                resultDiv.style.padding = '10px';
-                resultDiv.style.borderRadius = '5px';
-            } else {
-                resultDiv.innerHTML = 'Por favor, insira valores válidos!';
-                resultDiv.style.backgroundColor = '#ffe0e0';
-            }
-        }
-
-        // Sistema de Relatórios
-        function atualizarRelatorio() {
-            const periodo = document.getElementById('periodo').value;
-            const tipo = document.getElementById('tipo-relatorio').value;
-            const dadosFiltrados = filtrarDados(periodo, tipo);
-            
-            const tbody = document.getElementById('dados-relatorio');
-            tbody.innerHTML = dadosFiltrados.map(registro => `
-                <tr>
-                    <td>${formatarData(registro.data)}</td>
-                    <td>${registro.peso} kg</td>
-                    <td>${registro.altura} m</td>
-                    <td>${registro.imc}</td>
-                    <td>${registro.classificacao}</td>
-                </tr>
-            `).join('');
-        }
-
-        function filtrarDados(periodo, tipo) {
-            const agora = new Date();
-            return historicoIMC.filter(registro => {
-                const dataRegistro = new Date(registro.data);
-                
-                // Filtro temporal
-                if(periodo === 'dia' && !ehMesmoDia(dataRegistro, agora)) return false;
-                if(periodo === 'mes' && dataRegistro.getMonth() !== agora.getMonth()) return false;
-                if(periodo === 'ano' && dataRegistro.getFullYear() !== agora.getFullYear()) return false;
-                
-                // Filtro de classificação
-                switch(tipo) {
-                    case 'abaixo': return registro.classificacao === 'Abaixo do peso';
-                    case 'normal': return registro.classificacao === 'Peso normal';
-                    case 'sobrepeso': return registro.classificacao === 'Sobrepeso';
-                    case 'obesidade': return registro.classificacao.includes('Obesidade');
-                    default: return true;
-                }
-            });
-        }
-
-        function ehMesmoDia(d1, d2) {
-            return d1.getDate() === d2.getDate() &&
-                   d1.getMonth() === d2.getMonth() &&
-                   d1.getFullYear() === d2.getFullYear();
-        }
-
-        function formatarData(isoString) {
-            const data = new Date(isoString);
-            return data.toLocaleDateString('pt-BR') + ' ' + data.toLocaleTimeString('pt-BR').substring(0,5);
-        }
-
-        // Gerar PDF
-        function gerarPDF() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            
-            doc.setFontSize(18);
-            doc.text("Relatório de IMC - Saúde Digital", 14, 20);
-            doc.setFontSize(12);
-            doc.text(`Período: ${document.getElementById('periodo').value} | Filtro: ${document.getElementById('tipo-relatorio').value}`, 14, 30);
-            
-            const headers = [["Data", "Peso (kg)", "Altura (m)", "IMC", "Classificação"]];
-            const dados = filtrarDados(
-                document.getElementById('periodo').value,
-                document.getElementById('tipo-relatorio').value
-            ).map(registro => [
-                formatarData(registro.data),
-                registro.peso,
-                registro.altura,
-                registro.imc,
-                registro.classificacao
-            ]);
-
-            doc.autoTable({
-                head: headers,
-                body: dados,
-                startY: 40,
-                theme: 'grid',
-                styles: { fontSize: 10 },
-                headStyles: { fillColor: [33, 150, 243] }
-            });
-
-            doc.save('relatorio_imc.pdf');
-        }
-
-        // Event Listeners
-        document.getElementById('periodo').addEventListener('change', atualizarRelatorio);
-        document.getElementById('tipo-relatorio').addEventListener('change', atualizarRelatorio);
-        
-        // Inicialização
         window.onload = () => {
             historicoIMC = JSON.parse(localStorage.getItem('historicoIMC')) || [];
             atualizarRelatorio();
