@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema Completo de Saúde</title>
+    <title>Sistema de Saúde IMC</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         * {
@@ -97,6 +98,72 @@
             display: block;
         }
 
+        /* Estilos Dashboard */
+        .filters {
+            display: flex;
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .filter-btn {
+            background: none;
+            border: 2px solid var(--azul);
+            color: var(--azul);
+            padding: 10px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 600;
+        }
+
+        .filter-btn:hover {
+            background: var(--azul);
+            color: var(--branco);
+        }
+
+        .chart-container {
+            background: var(--branco);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 30px 0;
+            height: 500px;
+            box-shadow: 0 2px 10px var(--sombra);
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .card {
+            background: var(--branco);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px var(--sombra);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-header i {
+            font-size: 28px;
+            margin-right: 15px;
+            color: var(--azul);
+        }
+
+        .metric {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--azul);
+            margin-bottom: 10px;
+        }
+
+        /* Estilos IMC */
         .imc-container {
             max-width: 600px;
             margin: 0 auto;
@@ -162,17 +229,7 @@
             margin-bottom: 10px;
         }
 
-        .pdf-button {
-            background: var(--azul);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 20px;
-            float: right;
-        }
-
+        /* Estilos Relatórios */
         .relatorio-container {
             background: var(--branco);
             padding: 30px;
@@ -197,6 +254,183 @@
             background: var(--azul-claro);
             color: var(--azul);
         }
+
+        .pdf-button {
+            background: var(--azul);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            float: right;
+        }
+
+        /* Estilos Ajuda */
+        .ajuda-container {
+            background: var(--branco);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px var(--sombra);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .ajuda-section {
+            margin-bottom: 30px;
+        }
+        .config-panel {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      color: var(--primary);
+      text-align: center;
+      margin-bottom: 2rem;
+      font-weight: 600;
+    }
+
+    .control-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    select, input {
+      padding: 0.8rem;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+      width: 100%;
+      transition: border-color 0.3s ease;
+    }
+
+    select:focus, input:focus {
+      border-color: var(--secondary);
+      outline: none;
+    }
+
+    .btn {
+      padding: 0.8rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: transform 0.2s, opacity 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background: var(--secondary);
+      color: white;
+    }
+
+    .btn-danger {
+      background: var(--danger);
+      color: white;
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    #status {
+      padding: 1rem;
+      border-radius: 6px;
+      margin-top: 1rem;
+      display: none;
+    }
+
+    .connected {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    .disconnected {
+      background: #ffebee;
+      color: #c62828;
+    }
+
+    #output {
+      background: white;
+      border: 2px solid #eee;
+      border-radius: 6px;
+      padding: 1rem;
+      margin-top: 1rem;
+      height: 300px;
+      overflow-y: auto;
+      font-family: monospace;
+    }
+
+    .log-entry {
+      padding: 0.5rem;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .log-timestamp {
+      color: #666;
+      font-size: 0.8rem;
+    }
+
+    .dark-mode {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      cursor: pointer;
+    }
+
+        .ajuda-section h3 {
+            color: var(--azul);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .faq-item {
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--azul-claro);
+            padding-bottom: 15px;
+        }
+
+        .faq-pergunta {
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+        }
+
+        .faq-resposta {
+            display: none;
+            padding: 10px;
+            background: var(--azul-claro);
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .contato-emergencia {
+            background: #fff3cd;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
     </style>
 </head>
 <body>
@@ -210,8 +444,11 @@
         <div class="menu-item" data-page="relatorio">
             <i class="fas fa-chart-bar"></i> Relatórios
         </div>
-        <div class="menu-item">
+        <div class="menu-item" data-page="ajuda">
             <i class="fas fa-question-circle"></i> Ajuda
+        </div>
+        <div class="menu-item" data-page="def">
+            <i class="fas fa-cog"></i> Definição
         </div>
     </nav>
 
@@ -225,7 +462,45 @@
     </header>
 
     <main class="main-content">
-        
+        <!-- Página Dashboard -->
+        <div id="dashboard-content" class="content-page active-page">
+            <h1>Dashboard de Saúde</h1>
+            <div class="filters">
+                <button class="filter-btn active">Hoje</button>
+                <button class="filter-btn">Semana</button>
+                <button class="filter-btn">Mês</button>
+            </div>
+            <div class="chart-container">
+                <canvas id="healthChart"></canvas>
+            </div>
+            <div class="cards-grid">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-weight"></i>
+                        <h3>Peso Corporal</h3>
+                    </div>
+                    <div class="metric">75.4 kg</div>
+                    <p>Variação mensal: -0.8 kg</p>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-heartbeat"></i>
+                        <h3>Batimentos</h3>
+                    </div>
+                    <div class="metric">72 bpm</div>
+                    <p>Média diária</p>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fas fa-walking"></i>
+                        <h3>Passos</h3>
+                    </div>
+                    <div class="metric">8.432</div>
+                    <p>Meta diária: 10.000</p>
+                </div>
+            </div>
+        </div>
+
         <!-- Página IMC -->
         <div id="imc-content" class="content-page">
             <div class="imc-container">
@@ -235,11 +510,13 @@
                 <div class="imc-input-group">
                     <label>Peso (kg):</label>
                     <input type="number" id="weight" class="imc-input" step="0.1">
+                    <button class="filter-btn" onclick="obPeso()">Obter Peso</button>
                 </div>
                 
                 <div class="imc-input-group">
                     <label>Altura (m):</label>
                     <input type="number" id="height" class="imc-input" step="0.01">
+                    <button class="filter-btn" onclick="obAltura()">Obter Altura</button>
                 </div>
                 
                 <button class="imc-button" onclick="calculateIMC()">Calcular IMC</button>
@@ -270,9 +547,367 @@
                 </table>
             </div>
         </div>
+
+        <!-- Página Ajuda -->
+        <div id="ajuda-content" class="content-page">
+            <div class="ajuda-container">
+                <div class="ajuda-section">
+                    <h3><i class="fas fa-life-ring"></i> Ajuda Rápida</h3>
+                    <div class="faq-item">
+                        <div class="faq-pergunta" onclick="toggleResposta(this)">
+                            Como usar a calculadora de IMC?
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-resposta">
+                            1. Acesse a página "Teste IMC"<br>
+                            2. Insira seu nome completo<br>
+                            3. Digite seu peso em kg<br>
+                            4. Informe sua altura em metros<br>
+                            5. Clique em "Calcular IMC"
+                        </div>
+                    </div>
+
+                    <div class="faq-item">
+                        <div class="faq-pergunta" onclick="toggleResposta(this)">
+                            Como interpretar os resultados?
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-resposta">
+                            - Abaixo de 18.5: Baixo peso<br>
+                            - 18.5-24.9: Peso normal<br>
+                            - 25-29.9: Sobrepeso<br>
+                            - 30+: Obesidade
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ajuda-section">
+                    <h3><i class="fas fa-phone-alt"></i> Contatos Importantes</h3>
+                    <div class="contato-emergencia">
+                        <p><strong>Emergências Médicas:</strong> Ligue para 115</p>
+                        <p><strong>Nutricionista:</strong> nutricionista@itel.com</p>
+                        <p><strong>Suporte Técnico:</strong> suporte@sistemasaude.com</p>
+                    </div>
+                </div>
+
+                <div class="ajuda-section">
+                    <h3><i class="fas fa-file-pdf"></i> Tutoriais</h3>
+                    <button class="imc-button" onclick="abrirTutorial('user-guide.pdf')">
+                        <i class="fas fa-download"></i> Guia do Usuário
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="def-content" class="content-page">
+            <div class="dark-mode" onclick="toggleDarkMode()">🌓</div>
+  
+            <div class="config-panel">
+              <h1>Configuração de Comunicação Serial</h1>
+          
+              <div class="control-group">
+                <div>
+                  <label>Porta Serial:</label>
+                  <select id="port-select">
+                    <option value="">Selecione uma porta</option>
+                  </select>
+                </div>
+                
+                <div>
+                  <label>Baud Rate:</label>
+                  <select id="baudrate">
+                    <option value="9600">9600</option>
+                    <option value="115200" selected>115200</option>
+                    <option value="57600">57600</option>
+                    <option value="38400">38400</option>
+                    <option value="19200">19200</option>
+                  </select>
+                </div>
+              </div>
+          
+              <div class="control-group">
+                <button class="imc-button" onclick="refreshPorts()">
+                  🔄 Atualizar Portas
+                </button>
+                
+                <button class="imc-button" id="connect-btn" onclick="toggleConnection()">
+                  🔌 Conectar
+                </button>
+              </div>
+          
+              <div id="status"></div>
+            </div>
+          
+            <div class="config-panel">
+              <h2>Controle de Comunicação</h2>
+              
+              <div class="control-group">
+                <input type="text" id="mensagem" placeholder="Digite um comando...">
+                <button class="imc-button" id="enviar" onclick="sendMessage()">
+                  📤 Enviar Comando
+                </button>
+              </div>
+          
+              <div id="output">
+                <div class="log-entry">
+                  <span class="log-timestamp">[Sistema]</span>
+                  <span>Status: Aguardando conexão...</span>
+                </div>
+              </div>
+            </div>
+          
+        </div>
     </main>
 
     <script>
+        let port;
+    let reader;
+    let writer;
+    let isConnected = false;
+
+    // Elementos da UI
+    const portSelect = document.getElementById('port-select');
+    const baudrateSelect = document.getElementById('baudrate');
+    const connectBtn = document.getElementById('connect-btn');
+    const statusDiv = document.getElementById('status');
+    const outputDiv = document.getElementById('output');
+
+    async function refreshPorts() {
+      try {
+        const ports = await navigator.serial.getPorts();
+        portSelect.innerHTML = '<option value="">Selecione uma porta</option>';
+        ports.forEach(p => {
+          const option = document.createElement('option');
+          option.value = p.usbVendorId ? `${p.usbVendorId}:${p.usbProductId}` : p.path;
+          option.textContent = p.getInfo().path || 'Dispositivo Serial';
+          portSelect.appendChild(option);
+        });
+      } catch (err) {
+        logError('Erro ao listar portas: ' + err.message);
+      }
+    }
+
+    async function toggleConnection() {
+      if (isConnected) {
+        await disconnect();
+      } else {
+        await connect();
+      }
+    }
+
+    async function connect() {
+      try {
+        const selectedPort = portSelect.value;
+        const baudRate = parseInt(baudrateSelect.value);
+
+        if (!selectedPort) {
+          showStatus('Selecione uma porta primeiro!', 'disconnected');
+          return;
+        }
+
+        port = await navigator.serial.requestPort();
+        await port.open({ baudRate });
+
+        // Configura leitor
+        reader = port.readable.getReader();
+        // Configura escritor
+        writer = port.writable.getWriter();
+
+        isConnected = true;
+        updateUI();
+        showStatus('Conectado com sucesso!', 'connected');
+        startReading();
+
+      } catch (err) {
+        logError('Erro na conexão: ' + err.message);
+        isConnected = false;
+        updateUI();
+      }
+    }
+
+    async function disconnect() {
+      try {
+        if (reader) await reader.cancel();
+        if (writer) await writer.close();
+        if (port) await port.close();
+        
+        isConnected = false;
+        updateUI();
+        showStatus('Desconectado com sucesso!', 'disconnected');
+      } catch (err) {
+        logError('Erro ao desconectar: ' + err.message);
+      }
+    }
+
+    async function startReading() {
+      const decoder = new TextDecoder();
+      try {
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          const text = decoder.decode(value).trim();
+          if (text) {
+            logMessage(text, 'received');
+            // Enviar para API
+            sendToAPI(text);
+          }
+        }
+      } catch (err) {
+        logError('Erro na leitura: ' + err.message);
+      }
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById('mensagem');
+      const message = input.value.trim();
+      
+      if (!message || !isConnected) {
+        showStatus('Conecte-se primeiro ou digite uma mensagem!', 'disconnected');
+        return;
+      }
+
+      try {
+        const encoder = new TextEncoder();
+        await writer.write(encoder.encode(message + '\n'));
+        logMessage(message, 'sent');
+        input.value = '';
+      } catch (err) {
+        logError('Erro ao enviar: ' + err.message);
+      }
+    }
+
+async function obPeso() {
+    if (!isConnected) {
+        showStatus('Conecte-se primeiro!', 'disconnected');
+        return;
+    }
+
+    try {
+        const encoder = new TextEncoder();
+        await writer.write(encoder.encode("p\n"));
+        logMessage("p", 'sent');
+        
+        // Lê a resposta da serial
+        const response = await readSerialResponse();
+        document.getElementById('weight').value = parseFloat(response).toFixed(1);
+    } catch (err) {
+        logError('Erro ao obter peso: ' + err.message);
+    }
+}
+
+async function obAltura() {      
+    if (!isConnected) {
+        showStatus('Conecte-se primeiro!', 'disconnected');
+        return;
+    }
+
+    try {
+        const encoder = new TextEncoder();
+        await writer.write(encoder.encode("b\n"));
+        logMessage("b", 'sent');
+        
+        // Lê a resposta da serial
+        const response = await readSerialResponse();
+        document.getElementById('height').value = parseFloat(response).toFixed(2);
+    } catch (err) {
+        logError('Erro ao obter altura: ' + err.message);
+    }
+}
+
+// Função auxiliar para ler respostas da serial
+async function readSerialResponse() {
+    let receivedData = '';
+    
+    while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        
+        receivedData += new TextDecoder().decode(value);
+        if (receivedData.includes('\n')) {
+            const parts = receivedData.split('\n');
+            receivedData = parts[0]; // Pega apenas a primeira linha
+            break;
+        }
+    }
+    
+    return receivedData.trim();
+}
+
+// Função de conexão serial (exemplo)
+async function connectSerial() {
+    try {
+        const port = await navigator.serial.requestPort();
+        await port.open({ baudRate: 9600 });
+        
+        writer = port.writable.getWriter();
+        reader = port.readable
+            .pipeThrough(new TextDecoderStream())
+            .getReader();
+        
+        isConnected = true;
+        updateUI();
+    } catch (err) {
+        logError('Erro na conexão: ' + err.message);
+    }
+}
+
+    // Funções auxiliares
+    function updateUI() {
+      connectBtn.textContent = isConnected ? '🔌 Desconectar' : '🔌 Conectar';
+      connectBtn.className = `btn ${isConnected ? 'btn-danger' : 'btn-primary'}`;
+      portSelect.disabled = isConnected;
+      baudrateSelect.disabled = isConnected;
+    }
+
+    function showStatus(text, type) {
+      statusDiv.style.display = 'block';
+      statusDiv.className = type;
+      statusDiv.textContent = text;
+    }
+
+    function logMessage(text, type) {
+      const entry = document.createElement('div');
+      entry.className = 'log-entry';
+      entry.innerHTML = `
+        <span class="log-timestamp">[${new Date().toLocaleTimeString()}]</span>
+        <span>${type === 'sent' ? '📤 Enviado' : '📥 Recebido'}: ${text}</span>
+      `;
+      outputDiv.appendChild(entry);
+      outputDiv.scrollTop = outputDiv.scrollHeight;
+    }
+
+    function logError(text) {
+      const entry = document.createElement('div');
+      entry.className = 'log-entry';
+      entry.innerHTML = `
+        <span class="log-timestamp">[${new Date().toLocaleTimeString()}]</span>
+        <span style="color: var(--danger)">❌ Erro: ${text}</span>
+      `;
+      outputDiv.appendChild(entry);
+      outputDiv.scrollTop = outputDiv.scrollHeight;
+    }
+
+    async function sendToAPI(data) {
+      try {
+        await fetch('https://api.example.com/data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            timestamp: new Date().toISOString(),
+            value: data 
+          })
+        });
+      } catch (err) {
+        logError('Falha no envio para API: ' + err.message);
+      }
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      // Implementar lógica completa de dark mode
+    }
+
+    // Inicialização
+    refreshPorts();
         const recomendacoes = {
             'Abaixo do peso': {
                 medico: 'Consulta com nutricionista e endocrinologista. Realizar exames de sangue completos.',
@@ -308,7 +943,41 @@
 
         let historicoIMC = JSON.parse(localStorage.getItem('historicoIMC')) || [];
 
+        // Configuração do Gráfico
+        const ctx = document.getElementById('healthChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+                datasets: [{
+                    label: 'Evolução do IMC',
+                    data: [22.1, 22.8, 23.2, 22.9, 23.5, 23.1],
+                    borderColor: '#2196F3',
+                    tension: 0.4,
+                    fill: false
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Valor do IMC'
+                        }
+                    }
+                }
+            }
+        });
+
         function calculateIMC() {
+
             const userName = document.getElementById('user-name').value;
             const weight = parseFloat(document.getElementById('weight').value);
             const height = parseFloat(document.getElementById('height').value);
@@ -372,12 +1041,10 @@
             doc.setFontSize(18);
             doc.text(`Relatório de Saúde - ${userName}`, 14, 20);
             
-            // Dados básicos
             doc.setFontSize(12);
             doc.text(`Data: ${new Date(registro.data).toLocaleDateString()}`, 14, 30);
             doc.text(`IMC: ${registro.imc} (${registro.classificacao})`, 14, 40);
 
-            // Tabela de recomendações
             const data = [
                 ['Área', 'Recomendação'],
                 ['Médica', recomendacoes[registro.classificacao].medico],
@@ -409,6 +1076,17 @@
             `).join('');
         }
 
+        function toggleResposta(elemento) {
+            const resposta = elemento.nextElementSibling;
+            resposta.style.display = resposta.style.display === 'block' ? 'none' : 'block';
+            elemento.querySelector('i').classList.toggle('fa-chevron-up');
+        }
+
+        function abrirTutorial(arquivo) {
+            alert('Download do guia iniciado: ' + arquivo);
+        }
+
+        // Navegação
         document.querySelectorAll('.menu-item').forEach(item => {
             item.addEventListener('click', function() {
                 const pageId = this.dataset.page;
@@ -428,6 +1106,7 @@
             });
         });
 
+        // Inicialização
         window.onload = () => {
             historicoIMC = JSON.parse(localStorage.getItem('historicoIMC')) || [];
             atualizarRelatorio();
