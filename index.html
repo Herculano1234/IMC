@@ -1,1116 +1,950 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Saúde IMC</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Academia SG | Pense. Crie. Evolua.</title>
+    <meta name="description" content="Formamos a próxima geração de inovadores, programadores e engenheiros através de uma educação prática e orientada para o futuro.">
+    
+    <!-- Lucide Icons para ícones modernos -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- ScrollReveal para animações fluidas de scroll -->
+    <script src="https://unpkg.com/scrollreveal"></script>
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', sans-serif;
+        /* --- CONFIGURAÇÕES E VARIÁVEIS BASE --- */
+        :root {
+            --color-primary: #27D3FF;     /* Azul Ciano */
+            --color-secondary: #7A3FF2;   /* Roxo / Violeta */
+            --color-support: #173E9E;     /* Azul Escuro / Índigo */
+            --color-bg: #FFFFFF;          /* Fundo Claro Principal */
+            --color-dark: #0B0F19;        /* Texto Escuro */
+            --color-muted: #64748B;       /* Texto Secundário */
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --radius-sm: 8px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        :root {
-            --azul: #2196F3;
-            --azul-claro: #e3f2fd;
-            --branco: #ffffff;
-            --cinza: #f5f5f5;
-            --texto: #2c3e50;
-            --sombra: rgba(0,0,0,0.1);
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
         }
 
         body {
-            background: var(--cinza);
-            color: var(--texto);
-            display: grid;
-            grid-template-columns: 240px 1fr;
-            min-height: 100vh;
+            font-family: var(--font-sans);
+            background-color: var(--color-bg);
+            color: var(--color-dark);
+            overflow-x: hidden;
+            line-height: 1.6;
         }
 
-        .sidebar {
-            background: var(--branco);
-            padding: 20px;
-            position: fixed;
-            height: 100vh;
-            width: 240px;
-            box-shadow: 2px 0 10px var(--sombra);
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: var(--transition-smooth);
         }
 
-        .menu-item {
-            display: flex;
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .text-center { text-align: center; }
+        .mb-5 { margin-bottom: 3rem; }
+        .text-cyan { color: var(--color-primary); }
+
+        /* --- BOTÕES PREMIUM (ESTILO APPLE/STRIPE) --- */
+        .btn {
+            display: inline-flex;
             align-items: center;
-            padding: 15px;
-            margin: 8px 0;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.3s;
-            color: var(--texto);
-        }
-
-        .menu-item:hover {
-            background: var(--azul-claro);
-            color: var(--azul);
-        }
-
-        .menu-item i {
-            margin-right: 15px;
-            width: 25px;
-            color: var(--azul);
-        }
-
-        .header {
-            grid-column: 2;
-            background: var(--branco);
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 10px var(--sombra);
-        }
-
-        .search-bar {
-            background: var(--azul-claro);
-            border: none;
-            padding: 12px 25px;
-            border-radius: 25px;
-            width: 400px;
-            font-size: 14px;
-        }
-
-        .main-content {
-            padding: 40px;
-            grid-column: 2;
-            margin-top: 80px;
-        }
-
-        .content-page {
-            display: none;
-        }
-
-        .active-page {
-            display: block;
-        }
-
-        /* Estilos Dashboard */
-        .filters {
-            display: flex;
-            gap: 15px;
-            margin: 25px 0;
-        }
-
-        .filter-btn {
-            background: none;
-            border: 2px solid var(--azul);
-            color: var(--azul);
-            padding: 10px 25px;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: 0.3s;
+            justify-content: center;
+            padding: 12px 28px;
             font-weight: 600;
+            font-size: 0.95rem;
+            border-radius: var(--radius-md);
+            transition: var(--transition-smooth);
+            cursor: pointer;
+            border: none;
         }
 
-        .filter-btn:hover {
-            background: var(--azul);
-            color: var(--branco);
+        .btn-primary {
+            background: linear-gradient(135deg, var(--color-primary), #00b0df);
+            color: #FFF;
+            box-shadow: 0 4px 15px rgba(39, 211, 255, 0.3);
         }
 
-        .chart-container {
-            background: var(--branco);
-            padding: 25px;
-            border-radius: 15px;
-            margin: 30px 0;
-            height: 500px;
-            box-shadow: 0 2px 10px var(--sombra);
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(39, 211, 255, 0.5);
         }
 
-        .cards-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            margin-top: 40px;
+        .btn-secondary {
+            background: var(--glass-bg);
+            border: 1px solid rgba(122, 63, 242, 0.2);
+            color: var(--color-secondary);
+            backdrop-filter: blur(10px);
         }
 
-        .card {
-            background: var(--branco);
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 2px 10px var(--sombra);
+        .btn-secondary:hover {
+            background: rgba(122, 63, 242, 0.05);
+            transform: translateY(-2px);
         }
 
-        .card-header {
+        .btn-glow:hover {
+            animation: pulseGlow 1.5s infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 10px rgba(39, 211, 255, 0.4); }
+            100% { box-shadow: 0 0 25px rgba(122, 63, 242, 0.7); }
+        }
+
+        /* --- NAVBAR DINÂMICA --- */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: var(--transition-smooth);
+            padding: 20px 0;
+            background: transparent;
+            border-bottom: 1px solid transparent;
+        }
+
+        .navbar.scrolled {
+            padding: 12px 0;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid var(--glass-border);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
+        }
+
+        .nav-container {
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .card-header i {
-            font-size: 28px;
-            margin-right: 15px;
-            color: var(--azul);
-        }
-
-        .metric {
-            font-size: 36px;
-            font-weight: 700;
-            color: var(--azul);
-            margin-bottom: 10px;
-        }
-
-        /* Estilos IMC */
-        .imc-container {
-            max-width: 600px;
+            justify-content: space-between;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 30px;
-            background: var(--branco);
-            border-radius: 15px;
-            box-shadow: 0 2px 10px var(--sombra);
+            padding: 0 24px;
         }
 
-        .name-input {
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-s { color: var(--color-primary); }
+        .logo-g { color: var(--color-secondary); }
+
+        .nav-menu {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+
+        .nav-link {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--color-muted);
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--color-secondary);
+        }
+
+        .mobile-only-btn { display: none; }
+        .menu-toggle { display: none; background: none; border: none; cursor: pointer; color: var(--color-dark); }
+
+        /* --- HERO SECTION --- */
+        .hero-section {
+            position: relative;
+            padding: 180px 0 100px;
+            overflow: hidden;
+        }
+
+        .glow-bg-1 {
+            position: absolute;
+            top: -10%;
+            left: 70%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(39,211,255,0.15) 0%, rgba(255,255,255,0) 70%);
+            z-index: -1;
+        }
+
+        .glow-bg-2 {
+            position: absolute;
+            top: 30%;
+            left: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(122,63,242,0.1) 0%, rgba(255,255,255,0) 70%);
+            z-index: -1;
+        }
+
+        .abstract-arc {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            border: 3px dashed rgba(39, 211, 255, 0.2);
+            border-radius: 50%;
+            top: 20%;
+            right: 15%;
+            animation: spin 40s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: center;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -2px;
+            margin-bottom: 24px;
+        }
+
+        .text-gradient-purple { background: linear-gradient(135deg, var(--color-secondary), #a277ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .text-gradient-cyan { background: linear-gradient(135deg, var(--color-primary), #00a4ce); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--color-muted);
+            margin-bottom: 40px;
+            max-width: 520px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+        }
+
+        .hero-image-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-main-card {
             width: 100%;
-            padding: 12px;
-            margin-bottom: 20px;
-            border: 2px solid var(--azul-claro);
-            border-radius: 8px;
+            height: 420px;
+            background: linear-gradient(135deg, rgba(23, 62, 158, 0.1), rgba(122, 63, 242, 0.15)), url('https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=800&q=80');
+            background-size: cover;
+            background-position: center;
+            border-radius: var(--radius-lg);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+            position: relative;
         }
 
-        .imc-input-group {
-            margin-bottom: 20px;
+        .tech-tag {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(11, 15, 25, 0.7);
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .imc-input {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid var(--azul-claro);
-            border-radius: 8px;
-            font-size: 16px;
-        }
-
-        .imc-button {
-            background: var(--azul);
-            color: white;
-            border: none;
-            padding: 15px 25px;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 16px;
-            transition: 0.3s;
-        }
-
-        .imc-result {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            font-weight: bold;
-        }
-
-        .recommendations {
-            margin-top: 30px;
-            padding: 20px;
-            background: var(--azul-claro);
-            border-radius: 10px;
-        }
-
-        .recommendation-category {
-            margin-bottom: 20px;
-        }
-
-        .recommendation-category h4 {
-            color: var(--azul);
-            margin-bottom: 10px;
-        }
-
-        /* Estilos Relatórios */
-        .relatorio-container {
-            background: var(--branco);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 2px 10px var(--sombra);
-        }
-
-        .tabela-relatorio {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .tabela-relatorio th,
-        .tabela-relatorio td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid var(--azul-claro);
-        }
-
-        .tabela-relatorio th {
-            background: var(--azul-claro);
-            color: var(--azul);
-        }
-
-        .pdf-button {
-            background: var(--azul);
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 20px;
-            float: right;
-        }
-
-        /* Estilos Ajuda */
-        .ajuda-container {
-            background: var(--branco);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 2px 10px var(--sombra);
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .ajuda-section {
-            margin-bottom: 30px;
-        }
-        .config-panel {
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      padding: 2rem;
-      margin-bottom: 2rem;
-    }
-
-    h1 {
-      color: var(--primary);
-      text-align: center;
-      margin-bottom: 2rem;
-      font-weight: 600;
-    }
-
-    .control-group {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
-
-    select, input {
-      padding: 0.8rem;
-      border: 2px solid #ddd;
-      border-radius: 6px;
-      font-size: 1rem;
-      width: 100%;
-      transition: border-color 0.3s ease;
-    }
-
-    select:focus, input:focus {
-      border-color: var(--secondary);
-      outline: none;
-    }
-
-    .btn {
-      padding: 0.8rem 1.5rem;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: transform 0.2s, opacity 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .btn:active {
-      transform: scale(0.98);
-    }
-
-    .btn-primary {
-      background: var(--secondary);
-      color: white;
-    }
-
-    .btn-danger {
-      background: var(--danger);
-      color: white;
-    }
-
-    .btn-success {
-      background: var(--success);
-      color: white;
-    }
-
-    #status {
-      padding: 1rem;
-      border-radius: 6px;
-      margin-top: 1rem;
-      display: none;
-    }
-
-    .connected {
-      background: #e8f5e9;
-      color: #2e7d32;
-    }
-
-    .disconnected {
-      background: #ffebee;
-      color: #c62828;
-    }
-
-    #output {
-      background: white;
-      border: 2px solid #eee;
-      border-radius: 6px;
-      padding: 1rem;
-      margin-top: 1rem;
-      height: 300px;
-      overflow-y: auto;
-      font-family: monospace;
-    }
-
-    .log-entry {
-      padding: 0.5rem;
-      border-bottom: 1px solid #eee;
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-    }
-
-    .log-timestamp {
-      color: #666;
-      font-size: 0.8rem;
-    }
-
-    .dark-mode {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      cursor: pointer;
-    }
-
-        .ajuda-section h3 {
-            color: var(--azul);
-            margin-bottom: 15px;
+        .floating-element {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.75);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(12px);
+            padding: 12px 20px;
+            border-radius: var(--radius-md);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
             display: flex;
             align-items: center;
             gap: 10px;
-        }
-
-        .faq-item {
-            margin-bottom: 20px;
-            border-bottom: 1px solid var(--azul-claro);
-            padding-bottom: 15px;
-        }
-
-        .faq-pergunta {
             font-weight: 600;
-            cursor: pointer;
+            font-size: 0.85rem;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .floating-1 { top: 15%; right: -20px; animation-delay: 0s; }
+        .floating-2 { bottom: 20%; left: -30px; animation-delay: 1s; }
+        .floating-3 { bottom: -15px; right: 40px; animation-delay: 2s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* --- SECÇÕES INSTITUCIONAIS --- */
+        .section-tag {
+            color: var(--color-secondary);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1.5px;
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .section-subtitle {
+            color: var(--color-muted);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* SOBRE */
+        .about-section { padding: 100px 0; background: #FAFBFD; }
+        .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+
+        .about-img-placeholder {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(rgba(0,0,0,0.1), rgba(0,0,0,0.2)), url('https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=800&q=80');
+            background-size: cover;
+            background-position: center;
+            border-radius: var(--radius-lg);
+            position: relative;
+        }
+
+        .tech-badge {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background: var(--color-support);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+        }
+
+        .section-text { color: var(--color-muted); margin-bottom: 24px; font-size: 1.05rem; }
+        .about-features { display: flex; flex-direction: column; gap: 12px; }
+        .about-f-item { display: flex; align-items: center; gap: 10px; font-weight: 600; }
+
+        /* --- CARDS DE CURSOS --- */
+        .courses-section { padding: 100px 0; }
+        .courses-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 32px; }
+
+        .course-card {
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            transition: var(--transition-smooth);
             display: flex;
+            flex-direction: column;
             justify-content: space-between;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.01);
+        }
+
+        .course-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 35px rgba(122, 63, 242, 0.08);
+            border-color: rgba(122, 63, 242, 0.3);
+        }
+
+        .course-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            background: rgba(39, 211, 255, 0.1);
+            color: var(--color-support);
+            display: flex;
             align-items: center;
-            padding: 10px 0;
+            justify-content: center;
+            margin-bottom: 20px;
         }
 
-        .faq-resposta {
-            display: none;
-            padding: 10px;
-            background: var(--azul-claro);
-            border-radius: 8px;
-            margin-top: 10px;
+        .course-card h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 12px; }
+        .course-card p { color: var(--color-muted); font-size: 0.92rem; margin-bottom: 24px; flex-grow: 1; }
+
+        /* PROJETOS STYLED AS STARTUPS */
+        .projects-section { padding: 100px 0; background: #FAFBFD; }
+        .projects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 32px; }
+
+        .project-card {
+            background: #fff;
+            border-radius: var(--radius-lg);
+            border: 1px solid #E2E8F0;
+            overflow: hidden;
+            transition: var(--transition-smooth);
         }
 
-        .contato-emergencia {
-            background: #fff3cd;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 30px;
+        .project-card:hover { transform: scale(1.02); box-shadow: 0 15px 30px rgba(0,0,0,0.05); }
+
+        .project-img-sim {
+            height: 200px;
+            background: linear-gradient(135deg, var(--color-support), var(--color-secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
+
+        .project-img-sim i { width: 48px; height: 48px; }
+        .project-info { padding: 24px; }
+        .project-info h3 { margin-bottom: 8px; font-size: 1.25rem; }
+        .project-info p { color: var(--color-muted); font-size: 0.95rem; margin-bottom: 16px; }
+        .project-tech { font-size: 0.8rem; font-weight: 700; color: var(--color-primary); text-transform: uppercase; }
+
+        /* DIFERENCIAIS */
+        .diff-section { padding: 100px 0; }
+        .diff-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+        .diff-card { padding: 24px; border-radius: var(--radius-md); background: #FFF; border: 1px solid #E2E8F0; transition: var(--transition-smooth); }
+        .diff-card:hover { background: rgba(39, 211, 255, 0.02); border-color: var(--color-primary); }
+        .diff-card i { color: var(--color-secondary); margin-bottom: 12px; }
+        .diff-card h4 { margin-bottom: 8px; }
+        .diff-card p { font-size: 0.9rem; color: var(--color-muted); }
+
+        /* --- CONTADORES ANIMADOS --- */
+        .stats-section { padding: 60px 0; background: linear-gradient(135deg, var(--color-support), var(--color-dark)); color: #fff; }
+        .stats-grid { display: flex; justify-content: space-around; flex-wrap: wrap; gap: 32px; }
+        .stat-item { text-align: center; }
+        .stat-number { font-size: 3rem; font-weight: 800; color: var(--color-primary); }
+        .stat-label { color: rgba(255,255,255,0.7); font-size: 0.95rem; }
+
+        /* GALERIA INTERATIVA */
+        .gallery-section { padding: 100px 0; }
+        .gallery-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; height: 350px; }
+        .gallery-item { background-size: cover; background-position: center; border-radius: var(--radius-md); position: relative; overflow: hidden; transition: var(--transition-smooth); }
+        .gallery-item:hover { flex-grow: 2; transform: scale(1.02); }
+        .gallery-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 20px; background: linear-gradient(transparent, rgba(0,0,0,0.8)); color: #fff; font-weight: 600; opacity: 0; transition: var(--transition-smooth); }
+        .gallery-item:hover .gallery-overlay { opacity: 1; }
+
+        .item-1 { background-image: url('https://images.unsplash.com/photo-1561557944-6e7860d1a7eb?auto=format&fit=crop&w=500&q=80'); }
+        .item-2 { background-image: url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=500&q=80'); }
+        .item-3 { background-image: url('https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=500&q=80'); }
+        .item-4 { background-image: url('https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=500&q=80'); }
+
+        /* TESTEMUNHOS */
+        .testimonials-section { padding: 100px 0; background: #FAFBFD; }
+        .testimonials-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+        .testimonial-card { background: #fff; padding: 32px; border-radius: var(--radius-lg); border: 1px solid #E2E8F0; }
+        .stars { color: #FFB800; margin-bottom: 16px; }
+        .testimonial-card p { font-style: italic; color: var(--color-muted); margin-bottom: 24px; }
+        .user-info { display: flex; align-items: center; gap: 12px; }
+        .avatar-stub { width: 44px; height: 44px; background: var(--color-secondary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; }
+
+        /* PARCEIROS */
+        .partners-section { padding: 60px 0; border-top: 1px solid #E2E8F0; }
+        .partners-title { color: var(--color-muted); font-size: 0.9rem; font-weight: 600; margin-bottom: 24px; }
+        .partners-logos { display: flex; justify-content: center; align-items: center; gap: 60px; flex-wrap: wrap; }
+        .partner-logo-stub { font-size: 1.1rem; font-weight: 700; color: #94A3B8; filter: grayscale(100%); transition: var(--transition-smooth); cursor: default; }
+        .partner-logo-stub:hover { filter: grayscale(0%); color: var(--color-support); }
+
+        /* --- CTA FINAL --- */
+        .cta-section { padding: 100px 0; }
+        .cta-box { background: linear-gradient(135deg, var(--color-secondary), var(--color-support)); border-radius: var(--radius-lg); padding: 60px 24px; color: #FFF; }
+        .cta-box h2 { font-size: 2.5rem; font-weight: 800; margin-bottom: 16px; }
+        .cta-box p { font-size: 1.1rem; opacity: 0.9; margin-bottom: 32px; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .btn-large { padding: 16px 40px; font-size: 1.1rem; }
+
+        /* --- RODAPÉ --- */
+        .footer-section { background: var(--color-dark); color: #94A3B8; padding: 80px 0 30px; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 40px; margin-bottom: 60px; }
+        .footer-grid h4 { color: #FFF; font-size: 1.1rem; margin-bottom: 20px; }
+        .footer-grid a { display: block; margin-bottom: 12px; font-size: 0.95rem; }
+        .footer-grid a:hover { color: var(--color-primary); }
+        .footer-info p { margin-bottom: 16px; font-size: 0.95rem; }
+        .social-links { display: flex; gap: 16px; }
+        .social-links a { width: 36px; height: 36px; background: rgba(255,255,255,0.05); display: flex; align-items: center; justify-content: center; border-radius: 50%; color: #fff; }
+        .social-links a:hover { background: var(--color-primary); color: var(--color-dark); }
+        .footer-contact p { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; font-size: 0.95rem; }
+
+        .newsletter-form { display: flex; margin-top: 16px; position: relative; }
+        .newsletter-form input { width: 100%; padding: 12px 50px 12px 16px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: var(--radius-sm); color: #fff; }
+        .newsletter-form button { position: absolute; right: 4px; top: 4px; bottom: 4px; background: var(--color-primary); border: none; padding: 0 14px; border-radius: 6px; cursor: pointer; color: var(--color-dark); }
+
+        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.05); padding-top: 30px; text-align: center; font-size: 0.85rem; }
+
+        /* --- RESPONSIVIDADE COMPLETA --- */
+        @media (max-width: 992px) {
+            .hero-grid, .about-grid, .testimonials-grid { grid-template-columns: 1fr; gap: 40px; }
+            .hero-title { font-size: 3rem; }
+            .hero-image-container { margin-top: 40px; }
+            .gallery-grid { grid-template-columns: repeat(2, 1fr); height: auto; }
+            .gallery-item { height: 200px; }
+            .gallery-item:hover { flex-grow: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .desktop-only-btn { display: none; }
+            .mobile-only-btn { display: block; width: 100%; text-align: center; margin-top: 20px; }
+            .menu-toggle { display: block; }
+            
+            .nav-menu {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: #FFFFFF;
+                flex-direction: column;
+                padding: 24px;
+                gap: 16px;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+                border-top: 1px solid #E2E8F0;
+                display: none;
+            }
+            
+            .nav-menu.active { display: flex; }
+            .floating-element { display: none; }
         }
     </style>
 </head>
 <body>
-    <nav class="sidebar">
-        <div class="menu-item" data-page="dashboard">
-            <i class="fas fa-home"></i> Dashboard
-        </div>
-        <div class="menu-item" data-page="imc">
-            <i class="fas fa-calculator"></i> Teste IMC
-        </div>
-        <div class="menu-item" data-page="relatorio">
-            <i class="fas fa-chart-bar"></i> Relatórios
-        </div>
-        <div class="menu-item" data-page="ajuda">
-            <i class="fas fa-question-circle"></i> Ajuda
-        </div>
-        <div class="menu-item" data-page="def">
-            <i class="fas fa-cog"></i> Definição
-        </div>
-    </nav>
 
-    <header class="header">
-        <input type="text" class="search-bar" placeholder="Pesquisar...">
-        <div class="header-icons">
-            <i class="fas fa-bell"></i>
-            <i class="fas fa-cog"></i>
-            <i class="fas fa-user-circle"></i>
+    <!-- Menu Fixo Transparente / Blur -->
+    <header class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">
+                <span class="logo-s">S</span><span class="logo-g">G</span>
+                <span class="logo-text">Academia SG</span>
+            </a>
+            
+            <nav class="nav-menu" id="nav-menu">
+                <a href="#inicio" class="nav-link active">Início</a>
+                <a href="#sobre" class="nav-link">Sobre</a>
+                <a href="#cursos" class="nav-link">Cursos</a>
+                <a href="#projetos" class="nav-link">Projetos</a>
+                <a href="#parceiros" class="nav-link">Parceiros</a>
+                <a href="#testemunhos" class="nav-link">Testemunhos</a>
+                <a href="#contactos" class="nav-link">Contactos</a>
+                <a href="#inscricao" class="btn btn-primary mobile-only-btn">Inscreva-se</a>
+            </nav>
+
+            <div class="nav-actions">
+                <a href="#inscricao" class="btn btn-primary desktop-only-btn">Inscreva-se</a>
+                <button class="menu-toggle" id="menu-toggle" aria-label="Abrir Menu">
+                    <i data-lucide="menu"></i>
+                </button>
+            </div>
         </div>
     </header>
 
-    <main class="main-content">
-        <!-- Página Dashboard -->
-        <div id="dashboard-content" class="content-page active-page">
-            <h1>Dashboard de Saúde</h1>
-            <div class="filters">
-                <button class="filter-btn active">Hoje</button>
-                <button class="filter-btn">Semana</button>
-                <button class="filter-btn">Mês</button>
-            </div>
-            <div class="chart-container">
-                <canvas id="healthChart"></canvas>
-            </div>
-            <div class="cards-grid">
-                <div class="card">
-                    <div class="card-header">
-                        <i class="fas fa-weight"></i>
-                        <h3>Peso Corporal</h3>
-                    </div>
-                    <div class="metric">75.4 kg</div>
-                    <p>Variação mensal: -0.8 kg</p>
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <i class="fas fa-heartbeat"></i>
-                        <h3>Batimentos</h3>
-                    </div>
-                    <div class="metric">72 bpm</div>
-                    <p>Média diária</p>
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <i class="fas fa-walking"></i>
-                        <h3>Passos</h3>
-                    </div>
-                    <div class="metric">8.432</div>
-                    <p>Meta diária: 10.000</p>
-                </div>
-            </div>
+    <!-- SECÇÃO HERO -->
+    <section id="inicio" class="hero-section">
+        <div class="glow-bg-1"></div>
+        <div class="glow-bg-2"></div>
+        <div class="shapes-container">
+            <div class="abstract-arc"></div>
         </div>
-
-        <!-- Página IMC -->
-        <div id="imc-content" class="content-page">
-            <div class="imc-container">
-                <h2><i class="fas fa-user"></i> Avaliação de Saúde Individual</h2>
-                <input type="text" id="user-name" class="name-input" placeholder="Nome completo do paciente">
-                
-                <div class="imc-input-group">
-                    <label>Peso (kg):</label>
-                    <input type="number" id="weight" class="imc-input" step="0.1">
-                    <button class="filter-btn" onclick="obPeso()">Obter Peso</button>
-                </div>
-                
-                <div class="imc-input-group">
-                    <label>Altura (m):</label>
-                    <input type="number" id="height" class="imc-input" step="0.01">
-                    <button class="filter-btn" onclick="obAltura()">Obter Altura</button>
-                </div>
-                
-                <button class="imc-button" onclick="calculateIMC()">Calcular IMC</button>
-                
-                <div id="imc-result" class="imc-result"></div>
-                <div id="recommendations" class="recommendations"></div>
-                <button class="pdf-button" onclick="gerarRelatorioIndividual()" style="display: none;">
-                    <i class="fas fa-file-pdf"></i> Gerar Relatório Individual
-                </button>
-            </div>
-        </div>
-
-        <!-- Página Relatórios -->
-        <div id="relatorio-content" class="content-page">
-            <div class="relatorio-container">
-                <h2><i class="fas fa-file-medical"></i> Histórico de Avaliações</h2>
-                <table class="tabela-relatorio">
-                    <thead>
-                        <tr>
-                            <th>Nome</th>
-                            <th>Data</th>
-                            <th>IMC</th>
-                            <th>Classificação</th>
-                        </tr>
-                    </thead>
-                    <tbody id="dados-relatorio">
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Página Ajuda -->
-        <div id="ajuda-content" class="content-page">
-            <div class="ajuda-container">
-                <div class="ajuda-section">
-                    <h3><i class="fas fa-life-ring"></i> Ajuda Rápida</h3>
-                    <div class="faq-item">
-                        <div class="faq-pergunta" onclick="toggleResposta(this)">
-                            Como usar a calculadora de IMC?
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-resposta">
-                            1. Acesse a página "Teste IMC"<br>
-                            2. Insira seu nome completo<br>
-                            3. Digite seu peso em kg<br>
-                            4. Informe sua altura em metros<br>
-                            5. Clique em "Calcular IMC"
-                        </div>
-                    </div>
-
-                    <div class="faq-item">
-                        <div class="faq-pergunta" onclick="toggleResposta(this)">
-                            Como interpretar os resultados?
-                            <i class="fas fa-chevron-down"></i>
-                        </div>
-                        <div class="faq-resposta">
-                            - Abaixo de 18.5: Baixo peso<br>
-                            - 18.5-24.9: Peso normal<br>
-                            - 25-29.9: Sobrepeso<br>
-                            - 30+: Obesidade
-                        </div>
-                    </div>
-                </div>
-
-                <div class="ajuda-section">
-                    <h3><i class="fas fa-phone-alt"></i> Contatos Importantes</h3>
-                    <div class="contato-emergencia">
-                        <p><strong>Emergências Médicas:</strong> Ligue para 115</p>
-                        <p><strong>Nutricionista:</strong> nutricionista@itel.com</p>
-                        <p><strong>Suporte Técnico:</strong> suporte@sistemasaude.com</p>
-                    </div>
-                </div>
-
-                <div class="ajuda-section">
-                    <h3><i class="fas fa-file-pdf"></i> Tutoriais</h3>
-                    <button class="imc-button" onclick="abrirTutorial('user-guide.pdf')">
-                        <i class="fas fa-download"></i> Guia do Usuário
-                    </button>
+        
+        <div class="container hero-grid">
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    <span class="text-gradient-purple animate-word">Pense.</span><br>
+                    <span class="text-gradient-cyan animate-word">Crie.</span><br>
+                    <span class="animate-word">Evolua.</span>
+                </h1>
+                <p class="hero-subtitle">
+                    Formamos a próxima geração de inovadores, programadores, engenheiros, criadores e empreendedores através de uma educação prática e orientada para o futuro.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#inscricao" class="btn btn-primary btn-glow">Começar Agora</a>
+                    <a href="#cursos" class="btn btn-secondary">Explorar Cursos</a>
                 </div>
             </div>
-        </div>
-        <div id="def-content" class="content-page">
-            <div class="dark-mode" onclick="toggleDarkMode()">🌓</div>
-  
-            <div class="config-panel">
-              <h1>Configuração de Comunicação Serial</h1>
-          
-              <div class="control-group">
-                <div>
-                  <label>Porta Serial:</label>
-                  <select id="port-select">
-                    <option value="">Selecione uma porta</option>
-                  </select>
-                </div>
-                
-                <div>
-                  <label>Baud Rate:</label>
-                  <select id="baudrate">
-                    <option value="9600">9600</option>
-                    <option value="115200" selected>115200</option>
-                    <option value="57600">57600</option>
-                    <option value="38400">38400</option>
-                    <option value="19200">19200</option>
-                  </select>
-                </div>
-              </div>
-          
-              <div class="control-group">
-                <button class="imc-button" onclick="refreshPorts()">
-                  🔄 Atualizar Portas
-                </button>
-                
-                <button class="imc-button" id="connect-btn" onclick="toggleConnection()">
-                  🔌 Conectar
-                </button>
-              </div>
-          
-              <div id="status"></div>
-            </div>
-          
-            <div class="config-panel">
-              <h2>Controle de Comunicação</h2>
-              
-              <div class="control-group">
-                <input type="text" id="mensagem" placeholder="Digite um comando...">
-                <button class="imc-button" id="enviar" onclick="sendMessage()">
-                  📤 Enviar Comando
-                </button>
-              </div>
-          
-              <div id="output">
-                <div class="log-entry">
-                  <span class="log-timestamp">[Sistema]</span>
-                  <span>Status: Aguardando conexão...</span>
-                </div>
-              </div>
-            </div>
-          
-        </div>
-    </main>
-
-    <script>
-        let port;
-    let reader;
-    let writer;
-    let isConnected = false;
-
-    // Elementos da UI
-    const portSelect = document.getElementById('port-select');
-    const baudrateSelect = document.getElementById('baudrate');
-    const connectBtn = document.getElementById('connect-btn');
-    const statusDiv = document.getElementById('status');
-    const outputDiv = document.getElementById('output');
-
-    async function refreshPorts() {
-      try {
-        const ports = await navigator.serial.getPorts();
-        portSelect.innerHTML = '<option value="">Selecione uma porta</option>';
-        ports.forEach(p => {
-          const option = document.createElement('option');
-          option.value = p.usbVendorId ? `${p.usbVendorId}:${p.usbProductId}` : p.path;
-          option.textContent = p.getInfo().path || 'Dispositivo Serial';
-          portSelect.appendChild(option);
-        });
-      } catch (err) {
-        logError('Erro ao listar portas: ' + err.message);
-      }
-    }
-
-    async function toggleConnection() {
-      if (isConnected) {
-        await disconnect();
-      } else {
-        await connect();
-      }
-    }
-
-    async function connect() {
-      try {
-        const selectedPort = portSelect.value;
-        const baudRate = parseInt(baudrateSelect.value);
-
-        if (!selectedPort) {
-          showStatus('Selecione uma porta primeiro!', 'disconnected');
-          return;
-        }
-
-        port = await navigator.serial.requestPort();
-        await port.open({ baudRate });
-
-        // Configura leitor
-        reader = port.readable.getReader();
-        // Configura escritor
-        writer = port.writable.getWriter();
-
-        isConnected = true;
-        updateUI();
-        showStatus('Conectado com sucesso!', 'connected');
-        startReading();
-
-      } catch (err) {
-        logError('Erro na conexão: ' + err.message);
-        isConnected = false;
-        updateUI();
-      }
-    }
-
-    async function disconnect() {
-      try {
-        if (reader) await reader.cancel();
-        if (writer) await writer.close();
-        if (port) await port.close();
-        
-        isConnected = false;
-        updateUI();
-        showStatus('Desconectado com sucesso!', 'disconnected');
-      } catch (err) {
-        logError('Erro ao desconectar: ' + err.message);
-      }
-    }
-
-    async function startReading() {
-      const decoder = new TextDecoder();
-      try {
-        while (true) {
-          const { value, done } = await reader.read();
-          if (done) break;
-          const text = decoder.decode(value).trim();
-          if (text) {
-            logMessage(text, 'received');
-            // Enviar para API
-            sendToAPI(text);
-          }
-        }
-      } catch (err) {
-        logError('Erro na leitura: ' + err.message);
-      }
-    }
-
-    async function sendMessage() {
-      const input = document.getElementById('mensagem');
-      const message = input.value.trim();
-      
-      if (!message || !isConnected) {
-        showStatus('Conecte-se primeiro ou digite uma mensagem!', 'disconnected');
-        return;
-      }
-
-      try {
-        const encoder = new TextEncoder();
-        await writer.write(encoder.encode(message + '\n'));
-        logMessage(message, 'sent');
-        input.value = '';
-      } catch (err) {
-        logError('Erro ao enviar: ' + err.message);
-      }
-    }
-
-async function obPeso() {
-    if (!isConnected) {
-        showStatus('Conecte-se primeiro!', 'disconnected');
-        return;
-    }
-
-    try {
-        const encoder = new TextEncoder();
-        await writer.write(encoder.encode("p\n"));
-        logMessage("p", 'sent');
-        
-        // Lê a resposta da serial
-        const response = await readSerialResponse();
-        document.getElementById('weight').value = parseFloat(response).toFixed(1);
-    } catch (err) {
-        logError('Erro ao obter peso: ' + err.message);
-    }
-}
-
-async function obAltura() {      
-    if (!isConnected) {
-        showStatus('Conecte-se primeiro!', 'disconnected');
-        return;
-    }
-
-    try {
-        const encoder = new TextEncoder();
-        await writer.write(encoder.encode("b\n"));
-        logMessage("b", 'sent');
-        
-        // Lê a resposta da serial
-        const response = await readSerialResponse();
-        document.getElementById('height').value = parseFloat(response).toFixed(2);
-    } catch (err) {
-        logError('Erro ao obter altura: ' + err.message);
-    }
-}
-
-// Função auxiliar para ler respostas da serial
-async function readSerialResponse() {
-    let receivedData = '';
-    
-    while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        
-        receivedData += new TextDecoder().decode(value);
-        if (receivedData.includes('\n')) {
-            const parts = receivedData.split('\n');
-            receivedData = parts[0]; // Pega apenas a primeira linha
-            break;
-        }
-    }
-    
-    return receivedData.trim();
-}
-
-// Função de conexão serial (exemplo)
-async function connectSerial() {
-    try {
-        const port = await navigator.serial.requestPort();
-        await port.open({ baudRate: 9600 });
-        
-        writer = port.writable.getWriter();
-        reader = port.readable
-            .pipeThrough(new TextDecoderStream())
-            .getReader();
-        
-        isConnected = true;
-        updateUI();
-    } catch (err) {
-        logError('Erro na conexão: ' + err.message);
-    }
-}
-
-    // Funções auxiliares
-    function updateUI() {
-      connectBtn.textContent = isConnected ? '🔌 Desconectar' : '🔌 Conectar';
-      connectBtn.className = `btn ${isConnected ? 'btn-danger' : 'btn-primary'}`;
-      portSelect.disabled = isConnected;
-      baudrateSelect.disabled = isConnected;
-    }
-
-    function showStatus(text, type) {
-      statusDiv.style.display = 'block';
-      statusDiv.className = type;
-      statusDiv.textContent = text;
-    }
-
-    function logMessage(text, type) {
-      const entry = document.createElement('div');
-      entry.className = 'log-entry';
-      entry.innerHTML = `
-        <span class="log-timestamp">[${new Date().toLocaleTimeString()}]</span>
-        <span>${type === 'sent' ? '📤 Enviado' : '📥 Recebido'}: ${text}</span>
-      `;
-      outputDiv.appendChild(entry);
-      outputDiv.scrollTop = outputDiv.scrollHeight;
-    }
-
-    function logError(text) {
-      const entry = document.createElement('div');
-      entry.className = 'log-entry';
-      entry.innerHTML = `
-        <span class="log-timestamp">[${new Date().toLocaleTimeString()}]</span>
-        <span style="color: var(--danger)">❌ Erro: ${text}</span>
-      `;
-      outputDiv.appendChild(entry);
-      outputDiv.scrollTop = outputDiv.scrollHeight;
-    }
-
-    async function sendToAPI(data) {
-      try {
-        await fetch('https://api.example.com/data', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            timestamp: new Date().toISOString(),
-            value: data 
-          })
-        });
-      } catch (err) {
-        logError('Falha no envio para API: ' + err.message);
-      }
-    }
-
-    function toggleDarkMode() {
-      document.body.classList.toggle('dark-mode');
-      // Implementar lógica completa de dark mode
-    }
-
-    // Inicialização
-    refreshPorts();
-        const recomendacoes = {
-            'Abaixo do peso': {
-                medico: 'Consulta com nutricionista e endocrinologista. Realizar exames de sangue completos.',
-                nutricao: 'Dieta hipercalórica com aumento progressivo de nutrientes. Suplementação vitamínica.',
-                exercicio: 'Treino de força 3x/semana. Atividades aeróbicas leves 30min/dia.'
-            },
-            'Peso normal': {
-                medico: 'Check-up anual. Monitorar pressão arterial regularmente.',
-                nutricao: 'Manter dieta balanceada com ênfase em alimentos integrais. Hidratação adequada.',
-                exercicio: '150 minutos de atividade moderada por semana. Treino funcional 2x/semana.'
-            },
-            'Sobrepeso': {
-                medico: 'Avaliação de risco cardiovascular. Monitorar glicemia.',
-                nutricao: 'Redução de 300-500kcal/dia. Priorizar proteínas magras e fibras.',
-                exercicio: '300 minutos de atividade moderada/semana. Treino HIIT 3x/semana.'
-            },
-            'Obesidade Grau I': {
-                medico: 'Acompanhamento multidisciplinar. Avaliação metabólica completa.',
-                nutricao: 'Plano alimentar individualizado. Controle rigoroso de carboidratos.',
-                exercicio: 'Atividades aquáticas diárias. Caminhadas progressivas.'
-            },
-            'Obesidade Grau II': {
-                medico: 'Avaliação para intervenções cirúrgicas. Monitoramento cardiológico.',
-                nutricao: 'Dieta hipocalórica supervisionada. Reeducação alimentar intensiva.',
-                exercicio: 'Fisioterapia 3x/semana. Exercícios de mobilidade articular.'
-            },
-            'Obesidade Grau III': {
-                medico: 'Internação para avaliação emergencial. Controle de comorbidades.',
-                nutricao: 'Dieta hospitalar. Suporte nutricional parenteral se necessário.',
-                exercicio: 'Fisioterapia intensiva. Exercícios passivos assistidos.'
-            }
-        };
-
-        let historicoIMC = JSON.parse(localStorage.getItem('historicoIMC')) || [];
-
-        // Configuração do Gráfico
-        const ctx = document.getElementById('healthChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
-                datasets: [{
-                    label: 'Evolução do IMC',
-                    data: [22.1, 22.8, 23.2, 22.9, 23.5, 23.1],
-                    borderColor: '#2196F3',
-                    tension: 0.4,
-                    fill: false
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Valor do IMC'
-                        }
-                    }
-                }
-            }
-        });
-
-        function calculateIMC() {
-
-            const userName = document.getElementById('user-name').value;
-            const weight = parseFloat(document.getElementById('weight').value);
-            const height = parseFloat(document.getElementById('height').value);
-            const resultDiv = document.getElementById('imc-result');
-            const recDiv = document.getElementById('recommendations');
-            const pdfButton = document.querySelector('.pdf-button');
-
-            if (userName && weight && height > 0) {
-                const imc = weight / (height * height);
-                let classification = '';
-
-                if (imc < 18.5) classification = 'Abaixo do peso';
-                else if (imc < 25) classification = 'Peso normal';
-                else if (imc < 30) classification = 'Sobrepeso';
-                else if (imc < 35) classification = 'Obesidade Grau I';
-                else if (imc < 40) classification = 'Obesidade Grau II';
-                else classification = 'Obesidade Grau III';
-
-                const registro = {
-                    nome: userName,
-                    data: new Date().toISOString(),
-                    peso: weight,
-                    altura: height,
-                    imc: imc.toFixed(1),
-                    classificacao: classification
-                };
-
-                historicoIMC.push(registro);
-                localStorage.setItem('historicoIMC', JSON.stringify(historicoIMC));
-
-                resultDiv.innerHTML = `Resultado para ${userName}: IMC ${imc.toFixed(1)} (${classification})`;
-                resultDiv.style.backgroundColor = '#e3f2fd';
-                
-                recDiv.innerHTML = `
-                    <h3>Plano de Ação Personalizado:</h3>
-                    <div class="recommendation-category">
-                        <h4><i class="fas fa-stethoscope"></i> Recomendações Médicas</h4>
-                        <p>${recomendacoes[classification].medico}</p>
-                    </div>
-                    <div class="recommendation-category">
-                        <h4><i class="fas fa-utensils"></i> Orientações Nutricionais</h4>
-                        <p>${recomendacoes[classification].nutricao}</p>
-                    </div>
-                    <div class="recommendation-category">
-                        <h4><i class="fas fa-dumbbell"></i> Programa de Exercícios</h4>
-                        <p>${recomendacoes[classification].exercicio}</p>
-                    </div>
-                `;
-
-                pdfButton.style.display = 'block';
-                atualizarRelatorio();
-            }
-        }
-
-        function gerarRelatorioIndividual() {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-            const userName = document.getElementById('user-name').value;
-            const registro = historicoIMC[historicoIMC.length - 1];
-
-            doc.setFontSize(18);
-            doc.text(`Relatório de Saúde - ${userName}`, 14, 20);
             
-            doc.setFontSize(12);
-            doc.text(`Data: ${new Date(registro.data).toLocaleDateString()}`, 14, 30);
-            doc.text(`IMC: ${registro.imc} (${registro.classificacao})`, 14, 40);
+            <div class="hero-image-container">
+                <div class="hero-main-card">
+                    <div class="card-overlay"></div>
+                    <div class="tech-tag"><i data-lucide="cpu"></i> Smart Lab</div>
+                    
+                    <div class="floating-element floating-1">
+                        <i data-lucide="bot"></i> <span>ESP32 & Arduino</span>
+                    </div>
+                    <div class="floating-element floating-2">
+                        <i data-lucide="code-2"></i> <span>IA & Visão Computacional</span>
+                    </div>
+                    <div class="floating-element floating-3">
+                        <i data-lucide="printer"></i> <span>Impressão 3D</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-            const data = [
-                ['Área', 'Recomendação'],
-                ['Médica', recomendacoes[registro.classificacao].medico],
-                ['Nutrição', recomendacoes[registro.classificacao].nutricao],
-                ['Exercícios', recomendacoes[registro.classificacao].exercicio]
+    <!-- SECÇÃO SOBRE -->
+    <section id="sobre" class="about-section">
+        <div class="container about-grid">
+            <div class="about-image">
+                <div class="about-img-placeholder">
+                    <div class="tech-badge"><i data-lucide="graduation-cap"></i> Protagonismo & Inovação</div>
+                </div>
+            </div>
+            <div class="about-content">
+                <span class="section-tag">Quem Somos</span>
+                <h2 class="section-title">Construindo os Super Génios do Amanhã</h2>
+                <p class="section-text">
+                    A Academia SG prepara jovens e profissionais para as profissões do futuro através de uma metodologia prática baseada em projetos reais. Nos nossos laboratórios avançados, as ideias transformam-se em tecnologia, capacitando a liderança para o ecossistema global.
+                </p>
+                <div class="about-features">
+                    <div class="about-f-item">
+                        <i data-lucide="check-circle-2" class="text-cyan"></i>
+                        <span>Foco em Ecossistemas de Alta Tecnologia</span>
+                    </div>
+                    <div class="about-f-item">
+                        <i data-lucide="check-circle-2" class="text-cyan"></i>
+                        <span>Metodologia Ativa de Aprendizagem</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECÇÃO CURSOS -->
+    <section id="cursos" class="courses-section">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span class="section-tag">Formação Especializada</span>
+                <h2 class="section-title">Nossos Cursos</h2>
+                <p class="section-subtitle">Escolha a sua trilha de aceleração tecnológica e profissional.</p>
+            </div>
+            
+            <div class="courses-grid" id="courses-container"></div>
+        </div>
+    </section>
+
+    <!-- SECÇÃO PROJETOS -->
+    <section id="projetos" class="projects-section">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span class="section-tag">Estúdio de Inovação</span>
+                <h2 class="section-title">Desenvolvido por Super Génios</h2>
+                <p class="section-subtitle">Projetos de hardware e software concebidos e implementados pelos nossos estudantes.</p>
+            </div>
+
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-img-sim"><i data-lucide="navigation"></i></div>
+                    <div class="project-info">
+                        <h3>Drones de Mapeamento</h3>
+                        <p>Sistemas autónomos integrados com visão computacional para análise de terrenos.</p>
+                        <span class="project-tech">IoT · Python · Hardware</span>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="project-img-sim"><i data-lucide="activity"></i></div>
+                    <div class="project-info">
+                        <h3>Braço Robótico IoT</h3>
+                        <p>Automação industrial controlada remotamente via placas ESP32.</p>
+                        <span class="project-tech">Arduino · C++ · Automação</span>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="project-img-sim"><i data-lucide="smartphone"></i></div>
+                    <div class="project-info">
+                        <h3>Smart Cities App</h3>
+                        <p>Aplicações mobile modernas conectadas a sensores urbanos.</p>
+                        <span class="project-tech">Flutter · AI · Cloud</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECÇÃO DIFERENCIAIS -->
+    <section class="diff-section">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span class="section-tag">Porquê Escolher a SG?</span>
+                <h2 class="section-title">A Nossa Infraestrutura de Excelência</h2>
+            </div>
+            <div class="diff-grid" id="diff-container"></div>
+        </div>
+    </section>
+
+    <!-- SECÇÃO ESTATÍSTICAS -->
+    <section class="stats-section">
+        <div class="container stats-grid">
+            <div class="stat-item">
+                <h2 class="stat-number" data-target="500">+0</h2>
+                <p class="stat-label">Estudantes Formados</p>
+            </div>
+            <div class="stat-item">
+                <h2 class="stat-number" data-target="30">+0</h2>
+                <p class="stat-label">Cursos Práticos</p>
+            </div>
+            <div class="stat-item">
+                <h2 class="stat-number" data-target="100">+0</h2>
+                <p class="stat-label">Projetos Construídos</p>
+            </div>
+            <div class="stat-item">
+                <h2 class="stat-number" data-target="20">+0</h2>
+                <p class="stat-label">Formadores Especialistas</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECÇÃO GALERIA -->
+    <section class="gallery-section">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span class="section-tag">Ambiente SG</span>
+                <h2 class="section-title">Onde o Futuro Ganha Forma</h2>
+            </div>
+            <div class="gallery-grid">
+                <div class="gallery-item item-1"><div class="gallery-overlay">Oficinas de Robótica</div></div>
+                <div class="gallery-item item-2"><div class="gallery-overlay">Desenvolvimento Web</div></div>
+                <div class="gallery-item item-3"><div class="gallery-overlay">Laboratório IoT</div></div>
+                <div class="gallery-item item-4"><div class="gallery-overlay">Modelação 3D</div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECÇÃO TESTEMUNHOS -->
+    <section id="testemunhos" class="testimonials-section">
+        <div class="container">
+            <div class="text-center mb-5">
+                <span class="section-tag">Feedback</span>
+                <h2 class="section-title">Histórias de Sucesso</h2>
+            </div>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="stars"><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i></div>
+                    <p>"A metodologia prática mudou a minha perspetiva. Desenvolvi um braço robótico funcional logo nos primeiros meses!"</p>
+                    <div class="user-info">
+                        <div class="avatar-stub">HA</div>
+                        <div>
+                            <h4>Herculano António</h4>
+                            <span>Dev & Integrador IoT</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="stars"><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i><i data-lucide="star"></i></div>
+                    <p>"Excelente suporte e infraestrutura. O laboratório conta com impressoras 3D e componentes de última geração."</p>
+                    <div class="user-info">
+                        <div class="avatar-stub">PC</div>
+                        <div>
+                            <h4>Pedro Cipriano</h4>
+                            <span>Engenheiro de Software</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECÇÃO PARCEIROS -->
+    <section id="parceiros" class="partners-section">
+        <div class="container text-center">
+            <p class="partners-title">Empresas e Laboratórios Parceiros</p>
+            <div class="partners-logos">
+                <div class="partner-logo-stub">SmartLab Kangonjo</div>
+                <div class="partner-logo-stub">ITEL Innovation</div>
+                <div class="partner-logo-stub">Vercel Alliance</div>
+                <div class="partner-logo-stub">Stripe Africa</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA FINAL -->
+    <section id="inscricao" class="cta-section">
+        <div class="container text-center cta-box">
+            <h2>O futuro começa hoje.</h2>
+            <p>Junte-se à Academia SG e transforme o seu potencial criativo e técnico em oportunidades reais.</p>
+            <a href="#" class="btn btn-primary btn-large btn-glow">Quero Fazer Parte da Academia SG</a>
+        </div>
+    </section>
+
+    <!-- RODAPÉ -->
+    <footer id="contactos" class="footer-section">
+        <div class="container footer-grid">
+            <div class="footer-info">
+                <a href="#" class="logo mb-3">
+                    <span class="logo-s">S</span><span class="logo-g">G</span>
+                    <span class="logo-text text-white">Academia SG</span>
+                </a>
+                <p>Formação de alta performance tecnológica e engenharia prática.</p>
+                <div class="social-links">
+                    <a href="#"><i data-lucide="linkedin"></i></a>
+                    <a href="#"><i data-lucide="github"></i></a>
+                    <a href="#"><i data-lucide="instagram"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-links">
+                <h4>Links Rápidos</h4>
+                <a href="#inicio">Início</a>
+                <a href="#sobre">Sobre</a>
+                <a href="#cursos">Cursos</a>
+                <a href="#projetos">Projetos</a>
+            </div>
+
+            <div class="footer-contact">
+                <h4>Contactos</h4>
+                <p><i data-lucide="mail"></i> info@academiasg.ao</p>
+                <p><i data-lucide="phone"></i> +244 9xx xxx xxx</p>
+                <p><i data-lucide="map-pin"></i> Luanda, Angola</p>
+            </div>
+
+            <div class="footer-newsletter">
+                <h4>Newsletter</h4>
+                <p>Receba atualizações sobre novos cursos e workshops.</p>
+                <form class="newsletter-form" onsubmit="event.preventDefault();">
+                    <input type="email" placeholder="O seu melhor e-mail" required>
+                    <button type="submit"><i data-lucide="arrow-right"></i></button>
+                </form>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <p>&copy; 2026 Academia SG. Todos os direitos reservados. Pense. Crie. Evolua.</p>
+        </div>
+    </footer>
+
+    <!-- LÓGICA E CORE INTERATIVO -->
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Inicialização dos Ícones Lucide
+            lucide.createIcons();
+
+            // Controle do scroll do menu (efeito glassmorphism condensado)
+            const navbar = document.getElementById("navbar");
+            window.addEventListener("scroll", () => {
+                if (window.scrollY > 50) {
+                    navbar.classList.add("scrolled");
+                } else {
+                    navbar.classList.remove("scrolled");
+                }
+            });
+
+            // Lógica Menu Responsivo Hambúrguer
+            const menuToggle = document.getElementById("menu-toggle");
+            const navMenu = document.getElementById("nav-menu");
+
+            menuToggle.addEventListener("click", () => {
+                navMenu.classList.toggle("active");
+                const icon = menuToggle.querySelector("i");
+                if (navMenu.classList.contains("active")) {
+                    icon.setAttribute("data-lucide", "x");
+                } else {
+                    icon.setAttribute("data-lucide", "menu");
+                }
+                lucide.createIcons();
+            });
+
+            document.querySelectorAll(".nav-link").forEach(link => {
+                link.addEventListener("click", () => {
+                    navMenu.classList.remove("active");
+                    menuToggle.querySelector("i").setAttribute("data-lucide", "menu");
+                    lucide.createIcons();
+                });
+            });
+
+            // Injeção Dinâmica dos Cursos Solicitados
+            const cursos = [
+                { nome: "Programação", desc: "Estrutura de dados, lógica complexa e desenvolvimento.", icone: "code-2" },
+                { nome: "Robótica Avançada", desc: "Montagem, cinemática de robôs e automação prática.", icone: "bot" },
+                { nome: "Inteligência Artificial", desc: "Modelos preditivos, redes neuronais e computação.", icone: "brain" },
+                { nome: "Desenvolvimento Web", desc: "Interfaces reativas modernas e arquitetura Cloud.", icone: "layers" },
+                { nome: "Cyber Segurança", desc: "Auditoria de sistemas e proteção de infraestruturas.", icone: "shield-check" },
+                { nome: "Arduino & ESP32 (IoT)", desc: "Microcontroladores, sensores e comunicação integrada.", icone: "cpu" },
+                { nome: "Modelação & Impressão 3D", desc: "Projetos tridimensionais do conceito à manufatura física.", icone: "printer" },
+                { nome: "Empreendedorismo", desc: "Desenho de modelos de negócio e inserção no mercado.", icone: "rocket" }
             ];
 
-            doc.autoTable({
-                startY: 50,
-                head: [data[0]],
-                body: data.slice(1),
-                theme: 'grid',
-                styles: { fontSize: 10 },
-                headStyles: { fillColor: [33, 150, 243] }
+            const coursesContainer = document.getElementById("courses-container");
+            cursos.forEach(curso => {
+                const card = document.createElement("div");
+                card.className = "course-card";
+                card.innerHTML = `
+                    <div>
+                        <div class="course-icon"><i data-lucide="${curso.icone}"></i></div>
+                        <h3>${curso.nome}</h3>
+                        <p>${curso.desc}</p>
+                    </div>
+                    <a href="#inscricao" class="text-cyan" style="display:inline-flex; align-items:center; gap:5px; font-weight:600; font-size:0.9rem;">
+                        Saber Mais <i data-lucide="chevron-right" style="width:16px; height:16px;"></i>
+                    </a>
+                `;
+                coursesContainer.appendChild(card);
             });
 
-            doc.save(`Relatorio_${userName.replace(/ /g, '_')}.pdf`);
-        }
+            // Injeção de Diferenciais
+            const diferenciais = [
+                { t: "Aprendizagem Prática", d: "Metodologia ágil focada em laboratórios avançados.", i: "wrench" },
+                { t: "Professores Especialistas", d: "Mentorias conduzidas por profissionais de engenharia.", i: "users" },
+                { t: "Certificação", d: "Certificados reconhecidos com validação de portfólio.", i: "award" },
+                { t: "Preparação de Elite", d: "Direcionamento estratégico para o ecossistema de inovação.", i: "briefcase" }
+            ];
 
-        function atualizarRelatorio() {
-            const tbody = document.getElementById('dados-relatorio');
-            tbody.innerHTML = historicoIMC.map(registro => `
-                <tr>
-                    <td>${registro.nome}</td>
-                    <td>${new Date(registro.data).toLocaleDateString()}</td>
-                    <td>${registro.imc}</td>
-                    <td>${registro.classificacao}</td>
-                </tr>
-            `).join('');
-        }
+            const diffContainer = document.getElementById("diff-container");
+            diferenciais.forEach(item => {
+                const dCard = document.createElement("div");
+                dCard.className = "diff-card";
+                dCard.innerHTML = `
+                    <i data-lucide="${item.i}"></i>
+                    <h4>${item.t}</h4>
+                    <p>${item.d}</p>
+                `;
+                diffContainer.appendChild(dCard);
+            });
+            lucide.createIcons();
 
-        function toggleResposta(elemento) {
-            const resposta = elemento.nextElementSibling;
-            resposta.style.display = resposta.style.display === 'block' ? 'none' : 'block';
-            elemento.querySelector('i').classList.toggle('fa-chevron-up');
-        }
+            // Contadores Dinâmicos
+            const stats = document.querySelectorAll(".stat-number");
+            const runCounters = () => {
+                stats.forEach(counter => {
+                    const updateCount = () => {
+                        const target = +counter.getAttribute("data-target");
+                        const count = +counter.innerText.replace('+', '');
+                        const inc = Math.ceil(target / 100);
 
-        function abrirTutorial(arquivo) {
-            alert('Download do guia iniciado: ' + arquivo);
-        }
+                        if (count < target) {
+                            counter.innerText = `+${count + inc}`;
+                            setTimeout(updateCount, 20);
+                        } else {
+                            counter.innerText = `+${target}`;
+                        }
+                    };
+                    updateCount();
+                });
+            };
 
-        // Navegação
-        document.querySelectorAll('.menu-item').forEach(item => {
-            item.addEventListener('click', function() {
-                const pageId = this.dataset.page;
-                if(pageId) {
-                    document.querySelectorAll('.menu-item').forEach(i => {
-                        i.style.background = '';
-                        i.style.color = '';
-                    });
-                    this.style.background = '#e3f2fd';
-                    this.style.color = '#2196F3';
-                    
-                    document.querySelectorAll('.content-page').forEach(page => {
-                        page.classList.remove('active-page');
-                    });
-                    document.getElementById(`${pageId}-content`).classList.add('active-page');
-                }
+            // Animação por ScrollReveal
+            ScrollReveal().reveal('.animate-word', { delay: 100, distance: '20px', origin: 'bottom', interval: 120 });
+            ScrollReveal().reveal('.hero-subtitle, .hero-buttons', { delay: 450, distance: '20px', origin: 'bottom' });
+            ScrollReveal().reveal('.hero-image-container', { delay: 500, scale: 0.98 });
+            ScrollReveal().reveal('.course-card, .project-card, .diff-card', { delay: 150, interval: 60, distance: '30px', origin: 'bottom' });
+            
+            ScrollReveal().reveal('.stats-section', {
+                delay: 150,
+                afterReveal: runCounters
             });
         });
-
-        // Inicialização
-        window.onload = () => {
-            historicoIMC = JSON.parse(localStorage.getItem('historicoIMC')) || [];
-            atualizarRelatorio();
-        };
     </script>
 </body>
 </html>
