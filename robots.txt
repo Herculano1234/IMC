@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Host: supergenius.co.ao
 
 Sitemap: https://supergenius.co.ao/sitemap.xml
