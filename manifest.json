@@ -1,0 +1,9 @@
+{
+  "name": "Academia SG",
+  "short_name": "Academia SG",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#27D3FF",
+  "description": "Formação prática em programação, IA, robótica e engenharia para jovens inovadores."
+}

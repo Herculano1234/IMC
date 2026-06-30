@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://supergenius.co.ao/sitemap.xml
